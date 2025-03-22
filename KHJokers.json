@@ -6,7 +6,7 @@
 	"description": "Very cool mod by yours truly, cloudzXIII! Based on the hit video game series, Kingdom Hearts.",
 	"prefix": "cloudz",
 	"main_file": "KHJokers.lua",
-	"priority": 0,
+	"priority": -10000,
 	"badge_colour": "A96751",
 	"badge_text_colour": "FFFFFF",
 	"version": "0.0.1~beta",

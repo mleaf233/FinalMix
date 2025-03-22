@@ -6,19 +6,20 @@ SMODS.Joker {
 		text = {
 			"Retrigger all",
 			"played {C:hearts}heart{} cards",
-			"{C:green}#1# in #1#{} dies"
+			"{C:green}#1# in #2#{} dies"
 		}
 	},
 
-	config = { extra = { repetitions = 1, odds = 1} },
+	config = { extra = { repetitions = 1, odds = 6} },
 	rarity = 2,
 	atlas = 'KHJokers',
-	pos = { x = 0, y = 0 },
+	pos = { x = 2, y = 0 },
 	cost = 6,
 	blueprint_compat = true,
+	eternal_compat = false,
 	
 	loc_vars = function(self, info_queue, card)
-		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
+		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds} }
 	end,
 	
 	calculate = function(self, card, context)
@@ -56,11 +57,11 @@ SMODS.Joker {
 				}))
 				-- Sets the pool flag to true, meaning Gros Michel 2 doesn't spawn, and Cavendish 2 does.
 				return {
-					message = 'Extinct!'
+					message = 'Gawrsh!'
 				}
 			else
 				return {
-					message = 'Safe!'
+					message = 'Ha!'
 				}
 			end
 		end
