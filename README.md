@@ -1,7 +1,7 @@
 # ![icon](assets/1x/mod_icon.png) KHJokers
 Kingdom Hearts Themed Jokers!
 
- [Website](https://cloudzxiii.github.io/KHJokers/)
+ [Website](https://cloudzxiii.github.io/KHJokers/) (WIP)
 # Requirements
 - Requires [Steamodded 1.0](https://github.com/Steamodded/smods/wiki).
 - Requires [Lovely](https://github.com/ethangreen-dev/lovely-injector). This should already be installed as part of steamodded's installation process.
@@ -19,4 +19,4 @@ Currently Adds the following:<br>
 | Meeska Mooska    | Uncommon |Retriggers all played heart cards. 1 in 7 chance of being destroyed at the end of the round |
 | Retrolas         | Common |TODO|
 
-and more to come...
+and more to come... stay tuned!
