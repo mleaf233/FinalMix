@@ -14,10 +14,11 @@ Currently Adds the following:<br>
 ![KHJokers](assets/2x/KHJokers.png)
 | Jokers:          | Rarity | Ability|
 |------------------|--------|--------|
-| Keyblade         | Common | TODO|
-| Sora             | Uncommon | Gains 0.1x mult for every heart card scored, resets every ante|
+| Sora             | Rare | Gains 0.1x mult for every heart card scored, resets every ante|
+| Roxas         | Uncommon |TODO|
 | Meeska Mooska    | Uncommon |Retriggers all played heart cards. 1 in 7 chance of being destroyed at the end of the round |
+| Keyblade         | Common | TODO|
 | Retrolas         | Common |TODO|
-| Roxas         | Rare |TODO|
+
 
 and more to come... stay tuned!
