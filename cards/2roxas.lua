@@ -1,5 +1,6 @@
 SMODS.Joker {
 	key = 'roxas',
+	
 	loc_txt = {
 		name = 'Roxas',
 		text = {
@@ -9,17 +10,22 @@ SMODS.Joker {
 			"{C:inactive}is finally over..."
 		}
 	},
-
-	config = {	extra = { Xmult = 0.5,x_chips = 2,Xmult_gain = 0.1 } },
 	
 	loc_vars = function(self, info_queue, card)
 		return {vars = { card.ability.extra.Xmult, card.ability.extra.x_chips, card.ability.extra.Xmult_gain } }
 	end,
-	blueprint_compat = true,	
+		
 	rarity = 2,
 	atlas = 'KHJokers',
 	pos = { x = 1, y = 0},
 	cost = 5,
+	blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+	config = {
+		extra = { Xmult = 0.5,x_chips = 2,Xmult_gain = 0.1 }
+		},
+	
 	
 	calculate = function(self, card, context)
 	
@@ -31,7 +37,7 @@ SMODS.Joker {
 				}
 		end
 		
-		
+		-- xmult upgrade at end of the round
 		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
 			card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
                 return {

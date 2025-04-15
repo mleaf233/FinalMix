@@ -10,19 +10,23 @@ SMODS.Joker {
 			"destroyed at the end of the round",
 		}
 	},
-
-	config = { extra = { repetitions = 1, odds = 7} },
+	
+	
+	loc_vars = function(self, info_queue, card)
+		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds} }
+	end,
+	
 	rarity = 2,
 	atlas = 'KHJokers',
 	pos = { x = 2, y = 0 },
 	cost = 6,
 	blueprint_compat = true,
 	eternal_compat = false,
+	config = {
+		extra = { repetitions = 1, odds = 7}
+		},
 	
-	loc_vars = function(self, info_queue, card)
-		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds} }
-	end,
-	
+
 	calculate = function(self, card, context)
 		-- Checks that the current cardarea is G.play, or the cards that have been played, then checks to see if it's time to check for repetition.
 		-- The "not context.repetition_only" is there to keep it separate from seals.
