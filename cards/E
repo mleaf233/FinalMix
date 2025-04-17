@@ -3,16 +3,15 @@ SMODS.Joker {
     loc_txt = {
         name = "Nobody",
         text = {
-			"{C:dark_edition}DOES... NOTHING????",
+            "{C:dark_edition} Does... nothing?",
             "{C:inactive} nobody? who's nobody?",
         }
     },
+
+
 	
 	loc_vars = function(self, info_queue, card)
-		-- This is the way to add an info_queue, which is extra information about other cards
-		-- like Stone Cards on Marble/Stone Jokers, Steel Cards on Steel Joker, and
-		-- in this case, information about negative editions on Perkeo.
-		info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+		return {vars = { card.ability.extra.Xmult } }
 	end,
 
 	rarity = 1,
@@ -24,8 +23,18 @@ SMODS.Joker {
 	blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,	
-	config = { 
-		extra = {  }
+	config = {
+		extra = { Xmult = 1.5 }
 		},
 	
+	
+	calculate = function(self, card, context)
+		if context.joker_main then
+			return {
+				Xmult_mod = card.ability.extra.Xmult,
+				message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
+				}
+		end
+	end
 }
+
