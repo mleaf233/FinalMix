@@ -16,7 +16,7 @@ Currently Adds the following:<br>
 |------------------|----------|--------|
 | Sora             | Rare     | Gains 0.1x mult for every heart card scored, resets every ante|
 | Roxas            | Uncommon |Gives 0.5X Mult. Mult increases by 0.1X every round|
-| Meeska Mooska    | Uncommon |Retriggers all played heart cards. 1 in 7 chance of being destroyed at the end of the round |
+| Meeska Mooska    | Uncommon |ToDo |
 | Keyblade         | Common   | If first hand of round is a single 7, destroy it and create a random Tag|
 | Nobody           | Rare  | Gains +13 Chips per unique suit in scoring hand|
 | Paopu Fruit      | Uncommon   |Retriggers all played diamond cards. 1 in 7 chance of being eaten at the end of the round|
