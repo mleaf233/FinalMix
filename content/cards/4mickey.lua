@@ -23,7 +23,7 @@ SMODS.Joker {
 		} }
 	end,
 	
-	rarity = 3,
+	rarity = 2,
 	atlas = 'KHJokers',
 	pos = { x = 3, y = 0 },
 	cost = 6,
