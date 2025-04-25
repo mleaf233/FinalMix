@@ -18,7 +18,7 @@ Currently Adds the following:<br>
 | Sora             | Rare     | Gains 0.1x mult for every heart card scored, resets every ante|
 | Roxas            | Uncommon |(WIP/ToDo) Gives 0.5X Mult. Mult increases by 0.1X every round|
 | Kairi    | Uncommon |ToDo |
-| Meeska Mooska    | Uncommon |1 in 4 chance to gain +5 chips and 0.05x mult when a king is scored |
+| Meeska Mooska    | Uncommon |1 in 4 chance to gain +5 chips and 0.5x mult when a king is scored |
 | Donald Duck   | Uncommon |Copies the ability of a random joker each round |
 | Keyblade         | Common   | If first hand of round is a single 7, destroy it and create a random Tag|
 | Nobody           | Rare  | Gains +13 Chips per unique suit in first hand of round|
