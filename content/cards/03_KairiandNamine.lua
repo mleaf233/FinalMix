@@ -18,14 +18,18 @@ SMODS.Joker {
                 {n = G.UIT.R, config = {align = "cm"}, nodes =
                     flip_nodes[1]
                 },
-                {n = G.UIT.R, config = {align = "cm", padding = 0.08, colour = G.C.UI.BACKGROUND_DARK, r = 0.05}, nodes = {
+                {n = G.UIT.R, config = {align = "cm", padding = 0.08, colour = G.C.UI.BACKGROUND_INACTIVE, r = 0.1}, nodes = {
                     {n = G.UIT.R, config = {align = "cm"}, nodes = {
                         {n = G.UIT.O, config = {
                             object = DynaText({string = {G.localization.misc.dictionary['kh_'..(card.ability.extra.side == 'A' and 'b' or 'a')..'_side']}, colours = {G.C.WHITE},
-                            scale = 0.32 * (scale) * G.LANG.font.DESCSCALE})
+                            scale = 0.32 })
                         }},
                     }},
-                    {n = G.UIT.R, config = {align = "cm", outline_colour = G.C.UI.BACKGROUND_WHITE, colour = G.C.UI.BACKGROUND_WHITE, outline = 1, r = 0.05, padding = 0.05}, nodes = {
+                    {n = G.UIT.R, config = {align = "cm",
+                    outline_colour = G.C.UI.BACKGROUND_WHITE,
+                    colour = G.C.UI.BACKGROUND_WHITE,
+                    outline = 0.5,
+                    r = 0.1, padding = 0.1}, nodes = {
                         {n = G.UIT.R, config = {align = "cm"}, nodes =
                             side_nodes[1]
                         },
@@ -88,7 +92,7 @@ SMODS.Joker {
             local side = card.ability.extra.side
 
             if context.other_card:is_suit('Hearts') or context.other_card:is_suit('Diamonds') then
-                if side == 'A' then
+                if side == 'A' then -- KAIRI
                     return {
                         message = 'Again!',
                         repetitions = card.ability.extra.repetitions,
@@ -98,7 +102,7 @@ SMODS.Joker {
             end
 
             if context.other_card:is_suit('Spades') or context.other_card:is_suit('Clubs') then
-                if side == 'B' then
+                if side == 'B' then -- NAMINE
                     return {
                         message = 'Again!',
                         repetitions = card.ability.extra.repetitions,
@@ -109,6 +113,7 @@ SMODS.Joker {
 
         end
     end,
+
     update = function(self, card)
         if card.VT.w <= 0 then
             if card.ability.extra.side == 'A' then
@@ -118,6 +123,7 @@ SMODS.Joker {
             end
         end
     end,
+
     set_sprites = function(self, card, front)
         if self.discovered or card.bypass_discovery_center then
             if card.ability and card.ability.extra and card.ability.extra.side then
