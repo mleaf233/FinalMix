@@ -7,7 +7,7 @@
 - Requires [Lovely](https://github.com/ethangreen-dev/lovely-injector).
 
 ## Installation
-Get the latest version from  [here](https://github.com/cloudzXIII/KHJokers/archive/refs/heads/main.zip), then extract it into the Mods folder.
+Get the latest stable version from the [releases](https://github.com/cloudzXIII/KHJokers/releases)), then extract it into the Mods folder.
 
 # Features
 Currently Adds the following:<br>
