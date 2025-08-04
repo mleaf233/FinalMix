@@ -1,72 +1,99 @@
 SMODS.Joker {
+	name = 'Riku',
     key = 'riku',
-    loc_txt = {},
-    
-    loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue+1] = {key = "kh_lightsuit", set = "Other"}
-		info_queue[#info_queue+1] = {key = "kh_darksuit", set = "Other"}
-        return {
-            vars = {
-                card.ability.extra.chips, --1
-                card.ability.extra.mult, --2
-				card.ability.extra.dark, --3
-				card.ability.extra.light --4
-            }
-        }
-    end,
 
-    rarity = 2,
-    atlas = 'KHJokers',
-    pos = { x = 4, y = 1 },
-    cost = 6,
+	loc_vars = function(self, info_queue, card)
+		return {
+			vars = { 
+				card.ability.extra.most_played, --1
+				card.ability.extra.levels, --2
+				card.ability.extra.counter, --3
+				card.ability.extra.total --4
+			} 
+		}
+	end,
+
+	rarity = 2,
+	atlas = "KHJokers",
+	pos = { x = 4, y = 1 },
+	cost = 8,
     unlocked = true,
     discovered = true,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    
-    config = {
-        extra = { 
-			chips = 0,
-			mult = 0,
-			dark = 2,
-			light = 1
-		}
-    },
-    
-    calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.play and not context.blueprint then
-            if context.other_card:is_suit('Clubs') or context.other_card:is_suit('Spades') then
-					-- Gain Chips and Mult
-				card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.dark
-				card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.dark
-				return {
-					message = 'Upgraded!',
-					colour = G.C.GREEN,
-					card = card
-				}
-				
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	
+	config = {
+		 extra = {
+			 condition_satisfied = true,
+			 most_played = 'Pair',
+			 old_most_played = 'Pair',
+			 levels = 1,
+			 counter = 0,
+			 total = 4
+		} 
+	},
 
-            elseif context.other_card:is_suit('Hearts') or context.other_card:is_suit('Diamonds') then
-                --Reset Chips/Mult
-				card.ability.extra.chips = card.ability.extra.chips - card.ability.extra.light
-				card.ability.extra.mult = card.ability.extra.mult - card.ability.extra.light
-			
-				return {
-					message = 'Nope!',
-					colour = G.C.MONEY,
-					card = card,
-				}
+	set_ability = function(self, card, initial, delay_sprites)
+		
+		local _handname, _played, _order = 'High Card', -1, 100
+		for k, v in pairs(G.GAME.hands) do
+			if v.played > _played or (v.played == _played and _order > v.order) then 
+				_played = v.played
+				_handname = k
 			end
-        end
+		end
+		card.ability.extra.most_played = _handname
+		card.ability.extra.old_most_played = card.ability.extra.most_played
+	end,
 
-        -- Show Chips/Mult underneath Joker
-        if context.joker_main then
-            return {
-                chips = card.ability.extra.chips,
-                mult = card.ability.extra.mult,
-                card = card
-            }
-        end
-    end
+	calculate = function(self, card, context)
+
+		if context.final_scoring_step or context.end_of_round and not context.individual then
+			-- Update most played hand after every hand played/ at end of round
+			local _handname, _played, _order = 'High Card', -1, 100
+			for k, v in pairs(G.GAME.hands) do
+				if v.played > _played or (v.played == _played and _order > v.order) then 
+					_played = v.played
+					_handname = k
+				end
+			end
+			card.ability.extra.old_most_played = card.ability.extra.most_played
+			card.ability.extra.most_played = _handname
+		end
+
+		if context.reroll_shop then
+			card.ability.extra.counter = card.ability.extra.counter + 1
+
+			if card.ability.extra.counter == card.ability.extra.total then
+				card.ability.extra.counter = 0 -- resets reroll counter
+				local _card = context.blueprint_card or card
+				if card.ability.extra.condition_satisfied == true then
+					G.E_MANAGER:add_event(Event({
+						trigger = 'before',
+						delay = 0.0,
+						func = (function()
+							local _hand = card.ability.extra.old_most_played
+							update_hand_text({sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3}, {
+								handname = localize(_hand, 'poker_hands'),
+								chips = G.GAME.hands[_hand].chips,
+								mult = G.GAME.hands[_hand].mult,
+								level = G.GAME.hands[_hand].level
+							})
+							level_up_hand(_card, _hand, nil, card.ability.extra.levels)
+							update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, {
+								mult = 0, chips = 0, handname = '', level = ''
+							})
+							return true
+						end)
+					}))
+					card_eval_status_text(_card, 'extra', nil, nil, nil, {
+						message = localize('k_level_up_ex'), colour = G.C.FILTER
+					})
+					return nil, true
+				end
+				
+			end
+		end
+	end
 }

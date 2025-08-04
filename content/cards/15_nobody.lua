@@ -1,14 +1,12 @@
 SMODS.Joker {
+    name = 'Nobody',
     key = 'nobody',
-
-    loc_txt = {
-    },
 
     loc_vars = function(self, info_queue, card)
         return {
 			vars = {
 				card.ability.extra.chips, --1
-				card.ability.extra.bonuschips
+				card.ability.extra.chips_gain -- 2
 			}
 		}
     end,
@@ -28,13 +26,13 @@ SMODS.Joker {
     config = {
         extra = {
             chips = 0,
-            bonuschips = 13
+            chips_gain = 13
         }
     },
 
     calculate = function(self, card, context)
-        -- Only calculate new chips at the start of scoring
-        if context.before and context.cardarea == G.jokers and not context.blueprint then --and G.GAME.current_round.hands_played == 0 then
+        
+        if context.before and context.cardarea == G.jokers and not context.blueprint then
                 local suits = {}
                 for _, v in ipairs(context.scoring_hand) do
                     suits[v.base.suit] = true
@@ -45,7 +43,7 @@ SMODS.Joker {
                     unique_suits = unique_suits + 1
                 end
 
-                local total_chips = unique_suits * card.ability.extra.bonuschips
+                local total_chips = unique_suits * card.ability.extra.chips_gain
                 card.ability.extra.chips = card.ability.extra.chips + total_chips
 
                 return {
@@ -54,8 +52,7 @@ SMODS.Joker {
                 }
             
         end
-
-        -- Give chips when Joker is used
+        
         if context.joker_main then
             return {
                 chips = card.ability.extra.chips

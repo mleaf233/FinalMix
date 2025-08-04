@@ -3,6 +3,7 @@ version = "0.1.3"
 dump_lua = true
 priority = 0
 
+# Credits to Paperback for the patch!
 [[patches]]
 [patches.pattern]
 target = "functions/common_events.lua"
@@ -10,7 +11,6 @@ pattern = "if add and not G.GAME.banned_keys[v.key] then "
 position = "after"
 match_indent = true
 payload = '''
-    -- Credits to Paperback dev for the patch!
     -- If the selected deck is the Kingdom deck and this key is Kingdom Hearts Joker, add copies of it
     -- to the pool, so that it is more common to get
     if (G.GAME.selected_back_key or {}).key == 'b_kh_kingdom' and v.key:find('j_kh_') then
@@ -21,7 +21,7 @@ payload = '''
     end
 '''
 
-# function Card:flip() (Cassette)
+# function Card:flip(), Credits to Bunco for the patch!
 [[patches]]
 [patches.pattern]
 target = 'card.lua'
@@ -35,3 +35,115 @@ if self.config.center.key == 'j_kh_kairi' then
     self:calculate_joker({flip = true})
 end
 '''
+
+
+# thank you cryptid for the following patches used for one of my challenges
+
+# Remove tags
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "if type == 'Small' then"
+position = "at"
+payload = "if type == 'Small' and not G.GAME.modifiers.no_skipping then"
+match_indent = true
+
+# Remove tags
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "elseif type == 'Big' then"
+position = "at"
+payload = "elseif type == 'Big' and not G.GAME.modifiers.no_skipping then"
+match_indent = true
+
+# Remove tags
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "elseif not run_info then"
+position = "at"
+payload = "elseif type == 'Boss' and not run_info then"
+match_indent = true
+
+
+# big blind bosses
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "self.GAME.round_resets.blind_choices.Boss = get_new_boss()"
+position = "before"
+payload = '''
+if G.GAME.modifiers.kh_got_it_memorized then
+    self.GAME.round_resets.blind_choices.Small = get_new_boss()
+    self.GAME.round_resets.blind_choices.Big = get_new_boss()
+else
+    self.GAME.round_resets.blind_choices.Big = 'bl_big'
+end
+'''
+match_indent = true
+
+
+# big blind bosses
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "G.GAME.round_resets.blind_choices.Boss = get_new_boss()"
+position = "before"
+payload = '''
+if G.GAME.modifiers.kh_got_it_memorized then
+    G.GAME.round_resets.blind_choices.Small = get_new_boss()
+    G.GAME.round_resets.blind_choices.Big = get_new_boss()
+else
+    G.GAME.round_resets.blind_choices.Big = 'bl_big'
+end
+'''
+match_indent = true
+
+
+# Small and Big Boss Blinds don't increase ante
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "delay(0.4); ease_ante(1); delay(0.4); check_for_unlock({type = 'ante_up', ante = G.GAME.round_resets.ante + 1})"
+position = "at"
+payload = '''
+delay(0.4)
+-- Check if this is a real boss blind
+if G.GAME.blind_on_deck == 'Boss' then
+    ease_ante(1)
+end
+delay(0.4)
+check_for_unlock({type = 'ante_up', ante = G.GAME.round_resets.ante + 1})
+'''
+match_indent = true
+
+
+# Smaller showdown blinds don't win
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if G.GAME.round_resets.ante == G.GAME.win_ante and G.GAME.blind:get_type() == 'Boss' then"
+position = "at"
+payload = "if G.GAME.round_resets.ante == G.GAME.win_ante and G.GAME.blind_on_deck == 'Boss' then"
+match_indent = true
+
+
+# Mark small blind as defeated
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if G.GAME.round_resets.blind == G.P_BLINDS.bl_small then"
+position = "at"
+payload = "if G.GAME.blind_on_deck == 'Small' then"
+match_indent = true
+
+
+# Mark big blind as defeated
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "elseif G.GAME.round_resets.blind == G.P_BLINDS.bl_big then"
+position = "at"
+payload = "elseif G.GAME.blind_on_deck == 'Big' then"
+match_indent = true

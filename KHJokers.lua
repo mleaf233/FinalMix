@@ -19,12 +19,6 @@ SMODS.Atlas({
     path = 'consumabels.png'
 })
 
-SMODS.Atlas({
-    key = 'boosters',
-    px = 71,
-    py = 95,
-    path = 'boosters.png'
-})
 
 SMODS.Atlas({
     key = 'decks',
@@ -98,17 +92,6 @@ KH.config_tab = function()
         end
       }),
 	  
-      create_toggle({
-        id = "enable_booster",
-        label = localize("k_khjokers_config_booster"),
-        info = {localize('k_khjokers_config_restart')},
-        ref_table = KH.config,
-        ref_value = "enable_booster",
-        callback = function()
-          KH:save_config()
-        end
-      }),
-	  
     }
   }
 end
@@ -129,88 +112,20 @@ if KH.config.enable_spectrals then
   SMODS.load_file("content/consumables/spectrals.lua")()
 end
 
-
-if KH.config.enable_booster then
-	SMODS.load_file("content/booster/booster.lua")()
-end
-
 -- load Friends of Jimbo
-for _, file in ipairs{"kingdomheartsxbalatro.lua"} do -- can add anything else here if needed e.g. ', "mickeyxbalatro.lua"'
-	assert(SMODS.load_file("content/collabs/"..file))()
-end
+SMODS.load_file("content/collabs/kingdomheartsxbalatro.lua")()
 
 -- Joker Display Compat
 if JokerDisplay then
     SMODS.load_file("content/JokerDisplay/joker_display_definitions.lua")()
 end
 
+SMODS.load_file("content/consumables/seal.lua")()
 
--- challenges
+SMODS.load_file("content/challenges/challenges.lua")()
 
-SMODS.Challenge {
-	key = "noone",
-	loc_txt = {
-		name = "The No ones"
-	},
-  --button_colour = G.C.CHIPS,
-	modifiers = {
-		
-	},
-	jokers = {
-		{ id = "j_kh_nobody", eternal = true },
-	},
-    deck = {
-    seal = 'Blue',
-  },
-	unlocked = function(self)
-		return true
-	end
-}
 
---[[     rules = {
-        custom = {
-            { id = 'debuff_played_cards' },
-        },
-    },]]
-SMODS.Challenge {
-    key = 'sealsalty',
-	  loc_txt = {
-		  name = "Sea Salt Madness"
-	  },
-    jokers = {
-		  { id = "j_kh_sealsalt", eternal = true },
-	  },
 
-    deck = {
-        seal = 'Blue'
-    }
-}
-
---[[
-SMODS.Challenge {
-	key = "doubletrouble",
-	loc_txt = {
-		name = "Double Trouble"
-	},
-	jokers = {
-		{ id = "j_kh_namine", eternal = true }
-	},
-  deck = {
-    seal = 'Blue',
-    enhancement = 'm_glass',
-    cards = {
-        { s = 'C', r = 'K' },
-        { s = 'D', r = 'K' },
-        { s = 'H', r = 'K' },
-        { s = 'S', r = 'K' },
-        { s = 'S', r = 'K' },
-    }
-  },
-	unlocked = function(self)
-		return true
-	end
-}
---]]
 -- blinds
 SMODS.Blind {
     key = 'khblind',
@@ -251,9 +166,6 @@ SMODS.Blind {
     end
 }
 
-
-
-
 SMODS.Back {
   key = 'kingdom',
   atlas = 'decks',
@@ -261,6 +173,6 @@ SMODS.Back {
   config = {vouchers = { "v_overstock_norm"},},
   loc_vars = function(self, info_queue, center)
   end,
+  calculate = function(self, back, context)
+  end
 }
-
-

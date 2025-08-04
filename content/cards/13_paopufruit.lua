@@ -1,12 +1,13 @@
 SMODS.Joker {
+	name = 'Paopu Fruit',
 	key = 'paopufruit',
-	loc_txt = {},
 	
 	loc_vars = function(self, info_queue, card)
+		local numerator, denominator = SMODS.get_probability_vars(card, card.ability.extra.base, card.ability.extra.odds, 'paopu1')
 		return {
 			vars = {
-				(G.GAME.probabilities.normal or 1), --1
-				card.ability.extra.odds --2
+				numerator, --1
+				denominator --2
 			}
 		}
 	end,
@@ -24,13 +25,14 @@ SMODS.Joker {
 	config = {
 		extra = { 
 			repetitions = 1,
+			base = 1,
 			odds = 7
 		}
 	},
-	
 
 	calculate = function(self, card, context)
-		if context.cardarea == G.play and context.repetition and not context.repetition_only then -- Checks that the cards that have been played, then checks to see if it's time to check for repetition.
+
+		if context.cardarea == G.play and context.repetition and not context.repetition_only then
 			if context.other_card:is_suit("Diamonds") then
 				return {
 					message = 'Again!',
@@ -40,10 +42,8 @@ SMODS.Joker {
 			end
 		end
 		
-		-- Also, not context.repetition ensures it doesn't get called during repetitions.
 		if context.end_of_round and not context.repetition and context.game_over == false and not context.blueprint then
-			if pseudorandom('paopu') < G.GAME.probabilities.normal / card.ability.extra.odds then
-				-- This part plays the animation.
+			if SMODS.pseudorandom_probability(card, 'paopu', card.ability.extra.base, card.ability.extra.odds, 'paopu1') then
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						play_sound('tarot1')
@@ -51,7 +51,6 @@ SMODS.Joker {
 						card:juice_up(0.3, 0.4)
 						card.states.drag.is = true
 						card.children.center.pinch.x = true
-						-- This part destroys the card.
 						G.E_MANAGER:add_event(Event({
 							trigger = 'after',
 							delay = 0.3,

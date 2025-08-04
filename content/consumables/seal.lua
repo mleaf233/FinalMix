@@ -1,5 +1,5 @@
 SMODS.Atlas {
-    key = "seal_atlas",
+    key = "KHSeals",
     path = "modded_seal.png",
     px = 71,
     py = 95
@@ -9,74 +9,100 @@ SMODS.Seal {
     name = "luckyemblem",
     key = "luckyemblem",
     badge_colour = HEX("fab950"),
-    atlas = "seal_atlas",
+    atlas = "KHSeals",
     pos = {x=0, y=0},
-	config = {},
-    loc_txt = {
-        -- Badge name (displayed on card description when seal is applied)
-        label = 'Lucky Emblem',
-        -- Tooltip description
-        name = 'Lucky Emblem',
-        text = {
-                "cards with this seal are always drawn first!"
+
+    loc_vars = function(self, info_queue, card)
+        return { 
+            vars = {
+                self.config.extra.most_common_suit,
+                localize(self.config.extra.most_common_suit, 'suits_singular'), colours = { G.C.SUITS[self.config.extra.most_common_suit],}
+            }
+        }
+    end,
+
+    config = {
+        extra = {
+            most_common_suit = 'Hearts'
         }
     },
     
-    loc_vars = function(self, info_queue)
-        return { vars = {} }
-    end,
-    calculate = function(self, card, context)
-    end,
-
-}
-
-
-SMODS.Consumable {
-    set = "Spectral",
-    key = "honk",
-	config = {
-        -- How many cards can be selected.
-        max_highlighted = 1,
-        -- the key of the seal to change to
-        extra = 'luckyemblem',
-    },
-    loc_vars = function(self, info_queue, card)
-        -- Handle creating a tooltip with seal args.
-        info_queue[#info_queue+1] = G.P_SEALS[(card.ability or self.config).extra]
-        -- Description vars
-        return {vars = {(card.ability or self.config).max_highlighted}}
-    end,
     loc_txt = {
-        name = 'Honk',
+        label = 'Lucky Emblem',
+        name = 'Lucky Emblem',
         text = {
-            "Select {C:attention}#1#{} card to",
-            "apply {C:attention}Lucky Seal{}"
+             "Increases rank of card by 1",
+             "when {C:attention}discarded{} and converts",
+             "it to your {C:attention}most common{}",
+             "suit in your {C:attention}full deck{}",
+             "{C:inactive}(Currently {V:1}#1#{}{C:inactive}){}"
         }
     },
-    cost = 4,
-    atlas = "KHJokers",
-    pos = {x=0, y=0},
-    use = function(self, card, area, copier)
-        for i = 1, math.min(#G.hand.highlighted, card.ability.max_highlighted) do
-            G.E_MANAGER:add_event(Event({func = function()
-                play_sound('tarot1')
-                card:juice_up(0.3, 0.5)
-                return true end }))
+    
+    calculate = function(self, card, context)
+        local counts = {}
+        print("Most common suit in deck:", self.config.extra.most_common_suit, "with count", self.config.extra.most_common_suit)
+        for suit in pairs(SMODS.Suits) do
+            counts[suit] = 0
+            for _, card in pairs(G.playing_cards) do
+                if card:is_suit(suit) then
+                    counts[suit] = counts[suit] + 1
+                end
+            end
+        end
+
+        local max_count = -1
+        for suit, count in pairs(counts) do
+            if count > max_count then
+                max_count = count
+                self.config.extra.most_common_suit = suit
+            end
+        end
+
+        if context.discard and context.other_card == card and context.other_card:get_id() ~= 14 then
+
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.4,
+                func = function()
+                    play_sound('tarot1')
+                    card:juice_up(0.3, 0.5)
+                    return true
+                end
+            }))
             
-            G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,func = function()
-                G.hand.highlighted[i]:set_seal(card.ability.extra, nil, true)
-                return true end }))
-            
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    card:flip()
+                    play_sound('card1', 1)
+                    card:juice_up(0.3, 0.3)
+                    return true
+                 end
+            }))
+
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.1,
+                func = function()
+                    assert(SMODS.modify_rank(card, 1))
+                    assert(SMODS.change_base(card, self.config.extra.most_common_suit))
+                    return true
+                end
+            }))
+
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    card:flip()
+                    play_sound('tarot2', 1, 0.6)
+                    card:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
             delay(0.5)
         end
-        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2,func = function() G.hand:unhighlight_all(); return true end }))
     end
 }
---[[
-SMODS.Atlas {
-    key = "honk_atlas",
-    path = "honk.png",
-    px = 71,
-    py = 95
-}
---]]

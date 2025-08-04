@@ -26,18 +26,11 @@ local function create_consumable(joker, type, seed, key, message, colour)
 end
 
  SMODS.Joker{
+    name = 'Seal Salt Ice Cream',
     key = "sealsalt",
-    loc_txt = {
-    },
-	config = {
-		extra = { seal = 'Blue'}
-	},
+
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_SEALS[card.ability.extra.seal]
-        return {
-			vars = {
-			}
-		}
 	end,
 		
     rarity = 2,
@@ -50,7 +43,14 @@ end
 	eternal_compat = true,
 	perishable_compat = true,
 
+	config = {
+		extra = {
+             seal = 'Blue'
+        }
+	},
+
     calculate = function(self, card, context)
+
         if context.individual and context.cardarea == G.play and context.other_card and not context.blueprint and not context.other_card.debuff then
             local seal = context.other_card.seal
             if seal == "Blue" then  

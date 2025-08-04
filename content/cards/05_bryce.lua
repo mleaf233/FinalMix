@@ -1,6 +1,18 @@
 SMODS.Joker {
+	name = 'Bryce The Nobody',
     key = 'brycethenobody',
-    loc_txt = {},
+
+    loc_vars = function(self, info_queue, card)
+		local numerator, denominator = SMODS.get_probability_vars(card, card.ability.extra.base, card.ability.extra.odds, 'bryce1')
+        return {
+			vars = {
+				card.ability.extra.mult, --1
+				numerator, --2
+				denominator, --3
+			} 
+		}			
+    end,
+
     rarity = 2,
     atlas = 'KHJokers',
     pos = { x = 1, y = 3 },
@@ -14,24 +26,16 @@ SMODS.Joker {
     config = { 
 		extra = {
 			mult = 3,
-			odds = 2 
+			base = 1,
+			odds = 2
 		} 
 	},
 	
-    loc_vars = function(self, info_queue, card)
-        return {
-			vars = {
-				card.ability.extra.mult, --1
-				(G.GAME.probabilities.normal or 1), --2
-				card.ability.extra.odds, --3
-			} 
-		}			
-    end,
-	
     calculate = function(self, card, context)
+		
         if context.individual and context.cardarea == G.play then
 			if context.other_card:is_suit("Hearts") then
-				if pseudorandom('bryce') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				if SMODS.pseudorandom_probability(card, 'bryce', card.ability.extra.base, card.ability.extra.odds, 'bryce1') then
 					context.other_card.ability.perma_mult = context.other_card.ability.perma_mult or 0
 					context.other_card.ability.perma_mult = context.other_card.ability.perma_mult + card.ability.extra.mult
 					return {

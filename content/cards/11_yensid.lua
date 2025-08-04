@@ -23,16 +23,15 @@ end
 
 
 SMODS.Joker {
+	name = 'Master Yen Sid',
 	key = 'disney',
-	
-	loc_txt = {
-	},
 
 	loc_vars = function(self, info_queue, card)
+		local numerator, denominator = SMODS.get_probability_vars(card, card.ability.extra.base, card.ability.extra.odds, 'yensid1')
 		return {
 			vars = {
-				(G.GAME.probabilities.normal or 1), -- 1
-				card.ability.extra.odds,            -- 2
+				numerator, --1
+				denominator, --2
 			}
 		}
 	end,
@@ -49,13 +48,15 @@ SMODS.Joker {
 
 	config = {
 		extra = { 
-			odds = 3
+			odds = 3,
+			base = 1
 		}
 	},
 	
 	calculate = function(self, card, context)
+		
 		if context.using_consumeable and context.consumeable and  context.consumeable.ability.set == 'Tarot' and not context.blueprint then
-			if pseudorandom('yensid' .. G.GAME.round_resets.ante) < G.GAME.probabilities.normal / card.ability.extra.odds then
+			if SMODS.pseudorandom_probability(card, 'yensid', card.ability.extra.base, card.ability.extra.odds, 'yensid1') then
 				local hand = get_poker_hand()
 				card_eval_status_text(card, "extra", nil, nil, nil, {
 					message = localize("k_level_up_ex"),
@@ -80,76 +81,3 @@ SMODS.Joker {
 		end
 	end		
 }
-
-
-
---[[
-
-local function create_consumable(joker, type, seed, key, message, color)
-    --[[if #G.consumeables.cards + G.GAME.consumeable_buffer >= G.consumeables.config.card_limit then -- checks space in consumable slots
-        card_eval_status_text(joker, "extra", nil, nil, nil, {
-            message = localize("k_no_space_ex") -- gives a "No Space!" message if there isn't any space
-        })
-        return
-    end--
-	
-	G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-    G.E_MANAGER:add_event(Event({
-        trigger = "before",
-        delay = 0.0,
-        func = function()
-            local card = create_card(type, G.consumeables, nil, key, seed)
-            card:add_to_deck()
-			card:set_edition("e_negative", true)
-            G.consumeables:emplace(card)
-            G.GAME.consumeable_buffer = 0
-            return true
-        end
-    }))
-	
-    card_eval_status_text(joker, "extra", nil, nil, nil, {
-        message = localize("k_plus_planet"),
-        colour = G.C.SECONDARY_SET.Planet
-    })
-end
-SMODS.Joker {
-	key = 'disney',
-	
-	loc_txt = {
-	},
-
-	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = { key = 'e_negative_consumable', set = 'Edition', config = { extra = 1 } }
-		return {
-			vars = {
-				(G.GAME.probabilities.normal or 1), -- 1
-				card.ability.extra.odds,            -- 2
-			}
-		}
-	end,
-
-	rarity = 1,
-	atlas = 'KHJokers',
-	pos = { x = 0, y = 3 },
-	cost = 5,
-	unlocked = true,
-	discovered = true,
-	blueprint_compat = false,
-	eternal_compat = true,
-	perishable_compat = true,
-
-	config = {
-		extra = { 
-			odds = 2
-		}
-	},
-	
-	calculate = function(self, card, context)
-		if context.using_consumeable and context.consumeable and  context.consumeable.ability.set == 'Tarot' and not context.blueprint then
-			if pseudorandom('yensid' .. G.GAME.round_resets.ante) < G.GAME.probabilities.normal / card.ability.extra.odds then
-				create_consumable(card, "Planet", "k_plus_planet")	
-			end
-		end
-	end		
-}
---]]

@@ -1,20 +1,17 @@
 SMODS.Joker {
+    name = 'Roxas',
 	key = 'roxas',
-	
-	loc_txt = {
-	},
 	
     loc_vars = function(self, info_queue, card)
         return {
 			vars = {
-				card.ability.extra.chips_gain,
-				card.ability.extra.discards, 
-				card.ability.extra.discards_remaining,
-				card.ability.extra.chips
+				card.ability.extra.chips_gain, --1
+				card.ability.extra.discards,  --2
+				card.ability.extra.discards_remaining, --3
+				card.ability.extra.chips --4
 			} 
 		}
     end,
-
 		
 	rarity = 2,
 	atlas = 'KHJokers',
@@ -25,6 +22,7 @@ SMODS.Joker {
 	blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+
     config = {
 		extra = {
 			chips = 0,
@@ -34,8 +32,8 @@ SMODS.Joker {
 		} 
 	},
 	
-	
     calculate = function(self, card, context)
+        
         if context.joker_main and card.ability.extra.chips > 0 then
             return {
                 chips = card.ability.extra.chips,
