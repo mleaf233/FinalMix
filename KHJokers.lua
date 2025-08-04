@@ -40,16 +40,7 @@ KH = SMODS.current_mod
 KH.save_config = function(self)
   SMODS.save_mod_config(self)
 end
-KH.ui_config = {
-  colour = darken(G.C.RED,0.1),
-  author_colour = darken(G.C.BLUE,0.1),
-  ---bg_colour = G.C.CHIPS, 0.3,
-  back_colour = darken(G.C.BLUE, 0.1),
-  tab_button_colour = darken(G.C.BLUE, 0.1),
-  --collection_colour = G.C.RED,
-  collection_back_colour = darken(G.C.BLUE, 0.1),
-  collection_option_cycle_colour = G.C.BLUE, 0.1,
-}
+
 -- config
 KH.config_tab = function()
   return {

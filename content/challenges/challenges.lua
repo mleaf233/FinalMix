@@ -127,25 +127,3 @@ SMODS.Challenge {
       banned_other = {},
     },
 }
-
-SMODS.Challenge {
-    key = 'help_wanted',
-	  loc_txt = {
-		  name = "Help Wanted!"
-	  },
-    jokers = {
-		  { id = "j_kh_helpwanted", eternal = true},
-	  },
-	  rules = {
-		custom = {
-		},
-  },
-    deck = {
-      type = "Challenge Deck",
-    },
-    restrictions = {
-      banned_cards = {
-      },
-      banned_other = {},
-    },
-}
