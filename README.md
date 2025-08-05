@@ -13,8 +13,9 @@ Get the latest stable version from the [Releases](https://github.com/cloudzXIII/
 Currently Adds the following:<br>
 - Kingdom Hearts x Friends of Jimbo
 - 20 Jokers
-- 1 Tarot Card
+- 3 Challenges
 - 2 Spectral Cards
+- 1 Tarot Card
 - 1 Boss Blind
 - 1 Seal
 - 1 Deck
