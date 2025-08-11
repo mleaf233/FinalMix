@@ -586,11 +586,11 @@ jd_def["j_kh_helpwanted"] = {
             task_desc = "Mail Delivery"
             progress = "(" .. prog .. "/13)"
         elseif task == "skipping" then
-            task_desc = "Skip 4 Blinds"
+            task_desc = "Junk Sweep"
             progress = "(" .. prog .. "/4)"
         elseif card.ability.current_task == "shopping" then
             local spent = card.ability.money_spent or 0
-            task_desc = "Junk Sweep"
+            task_desc = "Poster Duty"
             progress = "($" .. spent .. "/30)"
         end
 
