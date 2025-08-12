@@ -5,10 +5,10 @@ SMODS.Joker {
     loc_vars = function(self, info_queue, card)
         return {
             vars = {
-                card.ability.extra.chips_gain, --1
-                card.ability.extra.discards, --2
+                card.ability.extra.chips_gain,         --1
+                card.ability.extra.discards,           --2
                 card.ability.extra.discards_remaining, --3
-                card.ability.extra.chips   --4
+                card.ability.extra.chips               --4
             }
         }
     end,
@@ -38,7 +38,6 @@ SMODS.Joker {
                 chips = card.ability.extra.chips,
             }
         elseif context.discard and not context.blueprint then
-            -- receives this context for every discarded card individually
             if card.ability.extra.discards_remaining <= 1 then
                 card.ability.extra.discards_remaining = card.ability.extra.discards
                 card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_gain

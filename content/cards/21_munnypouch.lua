@@ -135,6 +135,7 @@ SMODS.Joker {
 
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "kh_munnypouch_credits", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "kh_munny_info", set = "Other" }
         return {
             vars = {
             }
@@ -166,6 +167,7 @@ SMODS.Joker {
     loc_vars = function(self, info_queue, card)
         return {
             vars = {
+                card.ability.extra.dollars
             }
         }
     end,
@@ -181,12 +183,17 @@ SMODS.Joker {
     perishable_compat = true,
 
     config = {
+        extra = {
+            dollars = 1
+        }
     },
 
     calculate = function(self, card, context)
 
     end,
-
+    calc_dollar_bonus = function(self, card)
+        return card.ability.extra.dollars
+    end,
     in_pool = function(self)
         return false
     end

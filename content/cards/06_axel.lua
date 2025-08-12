@@ -198,7 +198,7 @@ SMODS.Joker {
             local name = target.ability.name
             local is_excluded = Exclude_list[name]
 
-            local joker_rules = {
+            local joker_rules = { -- do roxas
                 ["Riku"] = { keywords = { levels = true }, unkeywords = { total = true } },
                 ["Loyalty Card"] = { unkeywords = { loyalty_remaining = true, every = true } },
                 ["Caino"] = { unkeywords = { caino_xmult = true } },
@@ -208,6 +208,7 @@ SMODS.Joker {
                 ["Square Joker"] = { keywords = { chip_mod = true } },
                 ["Runner"] = { keywords = { chip_mod = true } },
                 ["Faceless Joker"] = { keywords = { dollars = true } },
+                ["Roxas"] = { unkeywords = { discards_remaining = true, discards = true, chips = true } },
             }
 
             local rules = joker_rules[name] or {

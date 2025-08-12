@@ -51,7 +51,8 @@ return {
 			j_kh_munny = {
 				name = 'Munny',
 				text = {
-					"{C:inactive}Does nothing..?"
+					"Earn {C:money}$#1#{} at",
+					"end of round",
 				},
 			},
 
@@ -391,8 +392,15 @@ return {
 				text = {
 					"{C:attention}PoundOS{} for the idea!"
 				}
-			}
+			},
 
+			kh_munny_info = {
+				name = "Munny",
+				text = {
+					"Earn {C:money}$1{} at",
+					"end of round",
+				}
+			}
 		},
 
 		Spectral = {

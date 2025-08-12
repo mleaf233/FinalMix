@@ -1,4 +1,3 @@
--- Chip and Dale (TODO),
 local jd_def = JokerDisplay.Definitions
 
 -- Sora
