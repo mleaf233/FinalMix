@@ -21,7 +21,7 @@ SMODS.Tarot {
         local joker_keys = getResourceWithPrefix("j_kh_")
 
         for i = #joker_keys, 1, -1 do
-            if joker_keys[i] == "j_kh_nobody" then
+            if joker_keys[i] == "j_kh_nobody" or joker_keys[i] == "j_kh_munny" then
                 table.remove(joker_keys, i)
             end
         end
