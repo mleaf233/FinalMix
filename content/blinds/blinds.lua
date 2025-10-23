@@ -1,5 +1,5 @@
 SMODS.Blind {
-  key = 'khblind',
+  key = 'shuffled',
   loc_txt = {
     name = 'Shuffled',
     text = {
@@ -7,6 +7,7 @@ SMODS.Blind {
       'When hand is played',
     }
   },
+  discovered = true,
   vars = {},
   dollars = 5,
   mult = 2,
@@ -14,7 +15,7 @@ SMODS.Blind {
   boss = { min = 2, max = 10 },
   boss_colour = HEX('c88465'),
   pos = { x = 0, y = 0 },
-  atlas = 'khblind',
+  atlas = 'KHBlind',
   press_play = function(self)
     G.E_MANAGER:add_event(Event({
       trigger = 'after',

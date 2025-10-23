@@ -1,0 +1,346 @@
+Partner_API.Partner {
+    key = "sora",
+    name = "Sora",
+    unlocked = true,
+    discovered = true,
+    pos = { x = 0, y = 0 },
+    loc_txt = {},
+    atlas = "KHPartner",
+    config = { extra = { Xmult = 0.1 } },
+    link_config = { j_kh_sora = 1 },
+    loc_vars = function(self, info_queue, card)
+        local link_level = self:get_link_level()
+        local benefits = 1
+        if link_level == 1 then benefits = 2 end
+        return { vars = { card.ability.extra.Xmult * benefits } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play then
+            if context.other_card:is_suit("Hearts") then
+                local link_level = self:get_link_level()
+                local benefits = 1
+                if link_level == 1 then benefits = 2 end
+                context.other_card.ability.perma_x_mult = context.other_card.ability.perma_x_mult or 0
+                context.other_card.ability.perma_x_mult = context.other_card.ability.perma_x_mult +
+                    card.ability.extra.Xmult * benefits
+                return {
+                    extra = { message = localize('k_upgrade_ex'), colour = G.C.MULT },
+                    card = card
+                }
+            end
+        end
+    end,
+}
+
+Partner_API.Partner { -- art is currently placeholder, will change eventually
+    key = "donald",
+    name = "Donald",
+    unlocked = true,
+    discovered = true,
+    pos = { x = 1, y = 0 },
+    loc_txt = {},
+    atlas = "KHPartner",
+    config = { extra = { Xmult = 0.1 } },
+    link_config = { j_kh_donald = 1 },
+    loc_vars = function(self, info_queue, card)
+        local copied_joker_key = card.ability.extra.copied_joker_key
+        local copied_name = "None"
+
+        if G.jokers then
+            local copied_joker = GetJokerByKey(G.jokers.cards, copied_joker_key)
+            if copied_joker then
+                copied_name = copied_joker.config.center.name
+            end
+        end
+
+        return {
+            vars = {
+                copied_name --1
+            }
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.after and not context.blueprint and G.jokers and #G.jokers.cards > 1 then
+            local available_jokers = {}
+
+            for _, joker in ipairs(G.jokers.cards) do
+                if joker ~= card and joker.config.center.blueprint_compat then
+                    table.insert(available_jokers, joker)
+                end
+            end
+
+            if #available_jokers > 0 then
+                local random_joker = pseudorandom_element(available_jokers, pseudoseed("randompartner"))
+                card.ability.extra.copied_joker_key = random_joker.config.center.key
+                card:update()
+
+                return {
+                    message = 'Copying!',
+                    card = card,
+                }
+            else
+                card.ability.extra.copied_joker_key = nil
+            end
+        end
+
+        if card.ability.extra.copied_joker_key and not card.debuff and G.jokers then
+            local copied_joker = GetJokerByKey(G.jokers.cards, card.ability.extra.copied_joker_key)
+
+            if copied_joker then
+                local success, effect = pcall(SMODS.blueprint_effect, card, copied_joker, context)
+                if success and effect then
+                    return effect
+                end
+            end
+        end
+    end,
+}
+
+Partner_API.Partner {
+    key = "mickey",
+    name = "Mickey",
+    unlocked = true,
+    discovered = true,
+    pos = { x = 2, y = 0 },
+    loc_txt = {},
+    atlas = "KHPartner",
+    config = {
+        extra = {
+            base = 1,
+            odds = 2
+        }
+    },
+    link_config = { j_kh_mickey = 1 },
+    loc_vars = function(self, info_queue, card)
+        local numerator, denominator = SMODS.get_probability_vars(card, card.ability.extra.base, card.ability.extra.odds,
+            'Kmickey')
+        return {
+            vars = {
+                numerator,   -- 1
+                denominator, -- 2
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and not context.blueprint then
+            if context.other_card == context.scoring_hand[1] then -- looks at first scoring card
+                if SMODS.pseudorandom_probability(card, 'mickeypartner', card.ability.extra.base, card.ability.extra.odds, 'Kmickey') then
+                    local playing_card = context.other_card
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        delay = 0.4,
+                        func = function()
+                            play_sound('tarot1')
+                            playing_card:juice_up(0.3, 0.5)
+                            return true
+                        end
+                    }))
+
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        delay = 0.15,
+                        func = function()
+                            playing_card:flip()
+                            play_sound('card1', 1)
+                            playing_card:juice_up(0.3, 0.3)
+                            return true
+                        end
+                    }))
+
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        delay = 0.1,
+                        func = function()
+                            assert(SMODS.change_base(playing_card, nil, "King"))
+                            return true
+                        end
+                    }))
+
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        delay = 0.15,
+                        func = function()
+                            playing_card:flip()
+                            play_sound('tarot2', 1, 0.6)
+                            playing_card:juice_up(0.3, 0.3)
+                            return true
+                        end
+                    }))
+
+                    delay(0.5)
+                end
+            end
+        end
+    end
+}
+
+Partner_API.Partner {
+    key = "randompaertner",
+    name = "Random Partner",
+    unlocked = true,
+    discovered = true,
+    pos = { x = 3, y = 0 },
+    loc_txt = {},
+    atlas = "KHPartner",
+    config = {
+        extra = {
+            percent = 0,
+            percent_plus = 5,
+            cost = 3,
+        }
+    },
+    link_config = { j_kh_randomjokeer = 1 },
+    loc_vars = function(self, info_queue, card)
+        local link_level = self:get_link_level()
+        local benefits = 1
+        if link_level == 1 then benefits = 2 end
+        return {
+            vars = {
+                card.ability.extra.percent,
+                card.ability.extra.percent_plus * benefits,
+                card.ability.extra.cost,
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.setting_blind and card.ability.extra.percent > 0 then
+            card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Reduced!", colour = G.C.PURPLE })
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.2,
+                func = function()
+                    G.GAME.blind.chips = math.floor(G.GAME.blind.chips * (1 - card.ability.extra.percent / 100))
+                    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+
+                    local chips_UI = G.hand_text_area.blind_chips
+                    G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
+                    G.HUD_blind:recalculate()
+                    chips_UI:juice_up()
+
+                    if not silent then play_sound('chips2') end
+
+                    if G.GAME.chips - G.GAME.blind.chips >= 0 then
+                        G.STATE = G.STATES.HAND_PLAYED
+                        G.STATE_COMPLETE = true
+                        end_round()
+                    end
+
+                    return true
+                end
+            }))
+        end
+        if context.end_of_round and not context.individual and not context.repetition and card.ability.extra.percent > 0 then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    card.ability.extra.percent = 0
+                    return true
+                end
+            }))
+            card_eval_status_text(card, "extra", nil, nil, nil, { message = localize("k_reset"), colour = G.C.RED })
+        end
+        if context.partner_click and ((to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost)) then
+            local link_level = self:get_link_level()
+            local benefits = 1
+            if link_level == 1 then benefits = 2 end
+            card.ability.extra.percent = card.ability.extra.percent + card.ability.extra.percent_plus * benefits
+            ease_dollars(-card.ability.extra.cost)
+            card_eval_status_text(card, "dollars", -card.ability.extra.cost)
+        end
+    end
+}
+
+Partner_API.Partner {
+    key = "randompartner",
+    name = "Random Partner",
+    unlocked = true,
+    discovered = true,
+    pos = { x = 3, y = 0 },
+    loc_txt = {},
+    atlas = "KHPartner",
+    config = {
+        extra = {}
+    },
+    link_config = { j_kh_randomjoker = 1 },
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {}
+        }
+    end,
+}
+
+local old_smods_scorecard = SMODS.score_card
+function SMODS.score_card(card, context)
+    local has_random_partner = false
+
+    if G.GAME.selected_partner_card
+        and G.GAME.selected_partner_card.ability
+        and G.GAME.selected_partner_card.config
+        and G.GAME.selected_partner_card.config.center.key == "pnr_kh_randompartner" then
+        has_random_partner = true
+    end
+
+    if has_random_partner and context.cardarea == G.hand and not G.scorehand then
+        local first_card = G.hand.cards[1]
+        local last_card = G.hand.cards[#G.hand.cards]
+        if card == first_card or card == last_card then
+            G.scorehand = true
+            context.cardarea = G.play
+            SMODS.score_card(card, context)
+            context.cardarea = G.hand
+            G.scorehand = nil
+        end
+    end
+
+    return old_smods_scorecard(card, context)
+end
+
+--[[ kinda op so in the vault for now till i find something better to do with it
+Partner_API.Partner {
+    key = "sora",
+    name = "Sora",
+    unlocked = true,
+    discovered = true,
+    pos = { x = 0, y = 0 },
+    loc_txt = {},
+    atlas = "KHPartner",
+    config = { extra = { x_mult = 1, Xmult_gain = 0.1, Xmult_extra = 0.1 } },
+    link_config = { j_kh_sora = 1 },
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                card.ability.extra.x_mult,     --1
+                card.ability.extra.Xmult_gain, --2
+                card.ability.extra.Xmult_extra --3
+            }
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and not context.blueprint then
+            if context.other_card:is_suit("Hearts") then
+                card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.Xmult_gain
+                return {
+                    message = 'Upgraded!',
+                    card = card,
+                }
+            end
+        end
+
+        if context.joker_main and card.ability.extra.x_mult > 1 then
+            return {
+                Xmult_mod = card.ability.extra.x_mult,
+                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.x_mult } }
+            }
+        end
+
+        if context.end_of_round and G.GAME.blind.boss and not context.individual and not context.repetition and not context.blueprint then
+            card.ability.extra.Xmult_gain = card.ability.extra.Xmult_gain + card.ability.extra.Xmult_extra
+            card.ability.extra.x_mult = 1
+            return {
+                message = localize('k_reset'),
+                colour = G.C.RED
+            }
+        end
+    end,
+}--]]

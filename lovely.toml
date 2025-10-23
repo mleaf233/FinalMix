@@ -1,5 +1,5 @@
 [manifest]
-version = "1.1.0"
+version = "1.1.3"
 dump_lua = true
 priority = 0
 
@@ -41,8 +41,20 @@ if self.config.center.key == 'j_kh_kairi' then
 end
 '''
 
+# Add context when a card retriggers
+# Credit: Somethingcom515
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/utils.lua"]'
+pattern = '''effect.message = effect.message or (not effect.remove_default_message and localize('k_again_ex'))'''
+position = "after"
+payload = '''
+effect.extra = {func = function() SMODS.calculate_context({card_retriggered = true}) end}
+'''
+match_indent = true
 
-# thank you cryptid for the following patches used for one of my challenges
+
+# thank you cryptid for the following patches used for the Got it Memorised Challenge!
 
 # Remove tags
 [[patches]]
@@ -110,18 +122,15 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"
-pattern = "delay(0.4); ease_ante(1); delay(0.4); check_for_unlock({type = 'ante_up', ante = G.GAME.round_resets.ante + 1})"
+pattern = "delay(0.4); SMODS.ante_end = true; ease_ante(1); SMODS.ante_end = nil; delay(0.4); check_for_unlock({type = 'ante_up', ante = G.GAME.round_resets.ante + 1})"
 position = "at"
 payload = '''
-delay(0.4)
--- Check if this is a real boss blind
-if G.GAME.blind_on_deck == 'Boss' then
-    ease_ante(1)
+if G.GAME.blind_on_deck == "Boss" then
+	delay(0.4); SMODS.ante_end = true; ease_ante(1); SMODS.ante_end = nil; delay(0.4); check_for_unlock({type = 'ante_up', ante = G.GAME.round_resets.ante + 1})
 end
-delay(0.4)
-check_for_unlock({type = 'ante_up', ante = G.GAME.round_resets.ante + 1})
 '''
 match_indent = true
+overwrite = true
 
 
 # Smaller showdown blinds don't win
@@ -152,3 +161,88 @@ pattern = "elseif G.GAME.round_resets.blind == G.P_BLINDS.bl_big then"
 position = "at"
 payload = "elseif G.GAME.blind_on_deck == 'Big' then"
 match_indent = true
+
+
+
+# Funky patch which fixes let him cook to make it so that when you create a copy of the joker it creates an entirely new card (prevents crashes)
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "local new_card = new_card or Card(other.T.x, other.T.y, G.CARD_W*(card_scale or 1), G.CARD_H*(card_scale or 1), G.P_CARDS.empty, G.P_CENTERS.c_base, {playing_card = playing_card, bypass_back = G.GAME.selected_back.pos})"
+position = "before"
+match_indent = true
+payload = '''
+if other.config and other.config.center and other.config.center.key == "j_kh_lethimcook" then
+    -- Spawn a brand-new Joker using create_card
+    local new_joker = create_card("Joker", G.jokers, nil, nil, false, nil, "j_kh_lethimcook")
+    return new_joker
+end
+'''
+
+# main menu stuff - credits to Maximus, Check them out!
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''
+if self.SPLASH_LOGO then self.SPLASH_LOGO:remove(); self.SPLASH_LOGO = nil end
+'''
+position = "after"
+payload = '''
+if self.SPLASH_KH_LOGO then self.SPLASH_KH_LOGO:remove(); self.SPLASH_KH_LOGO = nil end
+'''
+match_indent = true
+times = 1
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''
+if G.SPLASH_LOGO then
+    love.graphics.push()
+    G.SPLASH_LOGO:translate_container()
+    G.SPLASH_LOGO:draw()
+    love.graphics.pop()
+end
+'''
+position = "after"
+payload = '''
+
+if G.SPLASH_KH_LOGO then
+    love.graphics.push()
+    G.SPLASH_KH_LOGO:translate_container()
+
+    if not G.SPLASH_KH_LOGO.states.drag.is then
+        local scale_mod = 0.07 + 0.02*math.sin(1.8*G.TIMERS.REAL) + 0.00*math.sin((G.TIMERS.REAL - math.floor(G.TIMERS.REAL))*math.pi*14)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^3
+        local rotate_mod = 0.05*math.sin(1.219*G.TIMERS.REAL) + 0.00*math.sin((G.TIMERS.REAL)*math.pi*5)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^2
+
+        G.SPLASH_KH_LOGO:draw_shader('dissolve',0, nil, nil, G.SPLASH_KH_LOGO,scale_mod, rotate_mod,nil, 0.1 + 0.03*math.sin(1.8*G.TIMERS.REAL),nil, 0.6)
+        G.SPLASH_KH_LOGO:draw_shader('dissolve', nil, nil, nil, G.SPLASH_KH_LOGO, scale_mod, rotate_mod)local scale_mod = 0.07 + 0.02*math.sin(1.8*G.TIMERS.REAL) + 0.00*math.sin((G.TIMERS.REAL - math.floor(G.TIMERS.REAL))*math.pi*14)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^3
+        local rotate_mod = 0.05*math.sin(1.219*G.TIMERS.REAL) + 0.00*math.sin((G.TIMERS.REAL)*math.pi*5)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^2
+
+        G.SPLASH_KH_LOGO:draw_shader('dissolve',0, nil, nil, G.SPLASH_KH_LOGO,scale_mod, rotate_mod,nil, 0.1 + 0.03*math.sin(1.8*G.TIMERS.REAL),nil, 0.6)
+        G.SPLASH_KH_LOGO:draw_shader('dissolve', nil, nil, nil, G.SPLASH_KH_LOGO, scale_mod, rotate_mod)
+    end
+
+    add_to_drawhash(G.SPLASH_KH_LOGO)
+
+    love.graphics.pop()
+end
+'''
+match_indent = true
+times = 1
+
+# Game Variables
+[[patches]] #G.GAME 
+[patches.pattern]
+target = 'game.lua'
+pattern = '''
+unused_discards = 0,'''
+position = 'after'
+match_indent = true 
+payload = '''
+kh = {
+    moogle_shop = false,
+    luxord_sold = false,
+    luxord_destroyed = false,
+},
+'''

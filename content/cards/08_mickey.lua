@@ -1,4 +1,4 @@
-SMODS.Joker {
+SMODS.Joker { -- i dont like this ability at all, might have to scrap
 	name = 'Meeska Mooska',
 	key = 'mickey',
 
@@ -7,12 +7,8 @@ SMODS.Joker {
 			'mickey1')
 		return {
 			vars = {
-				numerator,         -- 1
-				denominator,       -- 2
-				card.ability.extra.x_mult, -- 3
-				card.ability.extra.Xmult_gain, -- 4
-				card.ability.extra.chips, -- 5
-				card.ability.extra.chips_gain -- 6
+				numerator, -- 1
+				denominator, -- 2
 			}
 		}
 	end,
@@ -28,10 +24,6 @@ SMODS.Joker {
 	perishable_compat = true,
 	config = {
 		extra = {
-			chips = 0,
-			chips_gain = 4,
-			x_mult = 1,
-			Xmult_gain = 0.25,
 			base = 1,
 			odds = 4
 		}
@@ -39,26 +31,37 @@ SMODS.Joker {
 
 
 	calculate = function(self, card, context)
-		if context.individual and context.cardarea == G.play and not context.blueprint then
-			if context.other_card:get_id() == 13 then -- checks if scored card is a King
-				if SMODS.pseudorandom_probability(card, 'mickey', card.ability.extra.base, card.ability.extra.odds, 'mickey1') then
-					card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.Xmult_gain
-					card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_gain
-					return {
-						message = 'Upgraded!',
-						card = card,
-					}
+		if context.before and context.main_eval and not context.blueprint then
+			if SMODS.pseudorandom_probability(card, 'mickey', card.ability.extra.base, card.ability.extra.odds, 'mickey1') then
+				for _, scored_card in ipairs(context.scoring_hand) do
+					local first_card = context.scoring_hand[1]
+					local last_card = context.scoring_hand[#context.scoring_hand]
+
+					if first_card then
+						assert(SMODS.change_base(first_card, nil, "King"))
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								scored_card:juice_up()
+								return true
+							end
+						}))
+					end
+
+					if last_card then
+						assert(SMODS.change_base(last_card, nil, "King"))
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								scored_card:juice_up()
+								return true
+							end
+						}))
+					end
 				end
+				return {
+					message = localize('kh_king'),
+					colour = G.C.MONEY
+				}
 			end
-		end
-
-		if context.joker_main then
-			return {
-				xmult = card.ability.extra.x_mult,
-				chips = card.ability.extra.chips,
-				card = context.other_card
-
-			}
 		end
 	end
 }

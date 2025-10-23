@@ -1,70 +1,3 @@
-XIII = {
-    funcs = {},
-    REND = {}
-}
-
--- Credits to Rofflatro for the doubling logic in this joker!
-
-local function should_modify_key(k, v, config, ref)
-    local keywords = config.keywords
-    local unkeywords = config.unkeywords or {}
-    local x_protect = config.x_protect ~= false
-
-    if unkeywords[k] then return false end
-    if keywords and not keywords[k] then return false end
-    if x_protect and ref[k] == 1 then
-        if k:sub(1, 2) == "x_" or k:sub(1, 4) == "h_x_" then -- if k == "Xmult"
-            return false
-        end
-    end
-    return type(v) == "number"
-end
-
-XIII.funcs.mod_card_values = function(table_in, config)
-    if not table_in then return end
-    config = config or {}
-
-    local add = config.add or 0
-    local multiply = config.multiply or 1
-    local reference = config.reference or table_in
-
-    local function modify(t, ref)
-        for k, v in pairs(t) do
-            if type(v) == "table" and type(ref[k]) == "table" then
-                modify(v, ref[k])
-            elseif should_modify_key(k, v, config, ref) then
-                t[k] = (ref[k] + add) * multiply
-            end
-        end
-    end
-
-    modify(table_in, reference)
-end
-
-XIII.funcs.xmult_playing_card = function(card, mult)
-    local tablein = {
-        nominal = card.base.nominal,
-        ability = card.ability
-    }
-
-    XIII.funcs.mod_card_values(tablein, { multiply = mult })
-    card.base.nominal = tablein.nominal
-    card.ability = tablein.ability
-end
-
--- Helper Functions (Credits to Rensnek)
-
-XIII.REND.starts_with = function(str, start)
-    return str:sub(1, #start) == start
-end
-
-XIII.REND.table_contains = function(tbl, val)
-    for _, v in pairs(tbl) do
-        if v == val then return true end
-    end
-    return false
-end
-
 Exclude_list = { -- List of incompatible Jokers
     ["Astronomer"] = true,
     ["Axel"] = true,
@@ -85,12 +18,12 @@ Exclude_list = { -- List of incompatible Jokers
     ["Dusk"] = true,
     ["Flash Card"] = true,
     ["Four Fingers"] = true,
+    ["Fortune Teller"] = true,
     ["Hallucination"] = true,
     ["Invisible Joker"] = true,
     ["Joker Stencil"] = true,
     ["Juggler"] = true,
     ["Keyblade"] = true,
-    ["Kingdom Hearts"] = true,
     ["Luchador"] = true,
     ["Marble Joker"] = true,
     ["Merry Andy"] = true,
@@ -120,10 +53,9 @@ Exclude_list = { -- List of incompatible Jokers
     ["Troubadour"] = true,
     ["Turtle Bean"] = true,
     ["Vagabond"] = true,
+    ["Let Him Cook"] = true,
+
 }
-
-
-
 
 SMODS.Joker {
     name = 'Axel',
@@ -199,7 +131,7 @@ SMODS.Joker {
             local is_excluded = Exclude_list[name]
 
             local joker_rules = { -- do roxas
-                ["Riku"] = { keywords = { levels = true }, unkeywords = { total = true } },
+                ["Riku"] = { keywords = { levels = true }, unkeywords = { counter = true, total = true } },
                 ["Loyalty Card"] = { unkeywords = { loyalty_remaining = true, every = true } },
                 ["Caino"] = { unkeywords = { caino_xmult = true } },
                 ["Yorick"] = { unkeywords = { yorick_discards = true, discards = true } },
@@ -209,6 +141,8 @@ SMODS.Joker {
                 ["Runner"] = { keywords = { chip_mod = true } },
                 ["Faceless Joker"] = { keywords = { dollars = true } },
                 ["Roxas"] = { unkeywords = { discards_remaining = true, discards = true, chips = true } },
+                ["Joker Menu"] = { unkeywords = { pos = true } },
+                ["Kingdom Hearts"] = { keywords = { chips = true, mult = true, xmult = true } },
             }
 
             local rules = joker_rules[name] or {

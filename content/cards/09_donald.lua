@@ -1,13 +1,3 @@
--- Function to get a Joker by its unique key from a list of Jokers.
-local function getJokerByKey(jokers, key)
-    for _, joker in ipairs(jokers) do
-        if joker.config.center.key == key then
-            return joker
-        end
-    end
-    return nil
-end
-
 SMODS.Joker {
     name = 'Donald',
     key = 'donald',
@@ -17,7 +7,7 @@ SMODS.Joker {
         local copied_name = "None"
 
         if G.jokers then
-            local copied_joker = getJokerByKey(G.jokers.cards, copied_joker_key)
+            local copied_joker = GetJokerByKey(G.jokers.cards, copied_joker_key)
             -- If a match is found, update the copied_name
             if copied_joker then
                 copied_name = copied_joker.config.center.name
@@ -31,10 +21,10 @@ SMODS.Joker {
         }
     end,
 
-    rarity = 3,
+    rarity = 2,
     atlas = 'KHJokers',
     pos = { x = 4, y = 0 },
-    cost = 8,
+    cost = 7,
     unlocked = true,
     discovered = true,
     blueprint_compat = true,
@@ -44,7 +34,7 @@ SMODS.Joker {
     config = {
         extra = {
             copied_joker_key = nil
-        } -- No Joker is copied at the start
+        }
     },
 
     calculate = function(self, card, context)
@@ -57,9 +47,8 @@ SMODS.Joker {
                 end
             end
 
-            -- If there are available Jokers to choose from
             if #available_jokers > 0 then
-                local random_joker = pseudorandom_element(available_jokers, pseudoseed("rando"))
+                local random_joker = pseudorandom_element(available_jokers, pseudoseed("pleaseberandom"))
                 card.ability.extra.copied_joker_key = random_joker.config.center.key
                 card:update()
 
@@ -73,7 +62,7 @@ SMODS.Joker {
         end
 
         if card.ability.extra.copied_joker_key and not card.debuff and G.jokers then
-            local copied_joker = getJokerByKey(G.jokers.cards, card.ability.extra.copied_joker_key)
+            local copied_joker = GetJokerByKey(G.jokers.cards, card.ability.extra.copied_joker_key)
 
             if copied_joker then
                 -- Applying copied joker's effect

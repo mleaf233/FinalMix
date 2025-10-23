@@ -1,32 +1,13 @@
-local function reset_keyblade_rank()
-    G.GAME.current_round.keyblade_rank = { rank = 'Seven', }
-    local valid_keyblade_cards = {}
-    for _, playing_card in ipairs(G.playing_cards) do
-        if not SMODS.has_no_rank(playing_card) then
-            valid_keyblade_cards[#valid_keyblade_cards + 1] = playing_card
-        end
-    end
-    local keyblade_card = pseudorandom_element(valid_keyblade_cards, 'cloudzXIII' .. G.GAME.round_resets.ante)
-    if keyblade_card then
-        G.GAME.current_round.keyblade_rank.rank = keyblade_card.base.value
-        G.GAME.current_round.keyblade_rank.id = keyblade_card.base.id
-    end
-end
-
--- Hook into the global reset so Keyblade changes each round
-function SMODS.current_mod.reset_game_globals(run_start)
-    reset_keyblade_rank()
-end
-
 SMODS.Joker {
     name = 'Keyblade',
     key = 'keyblade',
 
     loc_vars = function(self, info_queue, card)
         local keyblade_card = G.GAME.current_round.keyblade_rank or { rank = 'Seven' }
+        local key = localize(keyblade_card.rank, 'ranks')
         return {
             vars = {
-                localize(keyblade_card.rank, 'ranks'),
+                G.GAME.current_round.keyblade_rank and key or 7
             }
         }
     end,

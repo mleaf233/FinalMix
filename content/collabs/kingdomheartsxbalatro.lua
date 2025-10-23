@@ -19,15 +19,15 @@ SMODS.DeckSkin {
 	palettes = {
 		{
 			key = 'lc',
-			ranks = { 'Jack', 'Queen', "King", },
-			display_ranks = { "King", "Queen", "Jack" },
+			ranks = { 'Jack', 'Queen', "King", 'Ace' },
+			display_ranks = { "Ace", "King", "Queen", "Jack" },
 			atlas = atlas_lc.key,
 			pos_style = 'deck',
 		},
 		{
 			key = 'hc',
-			ranks = { 'Jack', 'Queen', "King", },
-			display_ranks = { "King", "Queen", "Jack" },
+			ranks = { 'Jack', 'Queen', "King", 'Ace' },
+			display_ranks = { "Ace", "King", "Queen", "Jack" },
 			atlas = atlas_hc.key,
 			pos_style = 'deck',
 			colour = HEX("9734f0"),
@@ -42,15 +42,15 @@ SMODS.DeckSkin {
 	palettes = {
 		{
 			key = 'lc',
-			ranks = { 'Jack', 'Queen', "King", },
-			display_ranks = { "King", "Queen", "Jack" },
+			ranks = { 'Jack', 'Queen', "King", 'Ace' },
+			display_ranks = { "Ace", "King", "Queen", "Jack" },
 			atlas = atlas_lc.key,
 			pos_style = 'deck',
 		},
 		{
 			key = 'hc',
-			ranks = { 'Jack', 'Queen', "King", },
-			display_ranks = { "King", "Queen", "Jack" },
+			ranks = { 'Jack', 'Queen', "King", 'Ace' },
+			display_ranks = { "Ace", "King", "Queen", "Jack" },
 			atlas = atlas_hc.key,
 			pos_style = 'deck',
 			colour = HEX("9734f0"),
@@ -65,15 +65,15 @@ SMODS.DeckSkin {
 	palettes = {
 		{
 			key = 'lc',
-			ranks = { 'Jack', 'Queen', "King", },
-			display_ranks = { "King", "Queen", "Jack" },
+			ranks = { 'Jack', 'Queen', "King", 'Ace' },
+			display_ranks = { "Ace", "King", "Queen", "Jack" },
 			atlas = atlas_lc.key,
 			pos_style = 'deck',
 		},
 		{
 			key = 'hc',
-			ranks = { 'Jack', 'Queen', "King", },
-			display_ranks = { "King", "Queen", "Jack" },
+			ranks = { 'Jack', 'Queen', "King", 'Ace' },
+			display_ranks = { "Ace", "King", "Queen", "Jack" },
 			atlas = atlas_hc.key,
 			pos_style = 'deck',
 			colour = HEX("9734f0"),
@@ -88,15 +88,15 @@ SMODS.DeckSkin {
 	palettes = {
 		{
 			key = 'lc',
-			ranks = { "King" },
-			display_ranks = { "King" },
+			ranks = { "King", 'Ace' },
+			display_ranks = { "Ace", "King", },
 			atlas = atlas_lc.key,
 			pos_style = 'deck',
 		},
 		{
 			key = 'hc',
-			ranks = { 'Jack', 'Queen', "King", },
-			display_ranks = { "King", "Queen", "Jack" },
+			ranks = { "King", 'Ace' },
+			display_ranks = { "Ace", "King", },
 			atlas = atlas_hc.key,
 			pos_style = 'deck',
 			colour = HEX("9734f0"),

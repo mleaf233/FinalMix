@@ -1,147 +1,18 @@
-G.FUNCS.kh_can_withdraw = function(e)
-    local reroll_cost = 1
-    local can_afford = to_big(G.GAME.dollars) >= to_big(reroll_cost) and
-        #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit
-    if can_afford then
-        e.config.colour = G.C.GREEN
-        e.config.button = 'kh_withdraw'
-    else
-        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-        e.config.button = nil
-    end
-end
-
-G.FUNCS.kh_withdraw = function(e)
-    local ref = e.config and e.config.ref_table
-    local card = ref and ref[1]
-
-    local reroll_cost = 1
-    -- Create joker here
-    G.E_MANAGER:add_event(Event({
-        func = function()
-            G.GAME.joker_buffer = G.GAME.joker_buffer + 1
-            G.E_MANAGER:add_event(Event({
-                func = function()
-                    SMODS.add_card({ set = 'Joker', key = 'j_kh_munny' })
-                    G.GAME.joker_buffer = 0
-                    card_eval_status_text(card, 'extra', nil, nil, nil,
-                        { message = "Munny!", colour = G.C.BLUE })
-                    return true
-                end
-            }))
-
-            return true
-        end
-    }))
-    G.E_MANAGER:add_event(Event({
-        trigger = 'after',
-        delay = 0.4,
-        func = function()
-            ease_dollars(-math.min(reroll_cost, G.GAME.dollars), true)
-            return true
-        end
-    }))
-end
-
-
-
-local use_and_sell_buttonsref = G.UIDEF.use_and_sell_buttons
-function G.UIDEF.use_and_sell_buttons(card)
-    local ret = use_and_sell_buttonsref(card)
-
-
-    if card.config and card.config.center_key == 'j_kh_munnypouch' then
-        local kh_withdraw_button = {
-            n = G.UIT.C,
-            config = { align = "cr" },
-            nodes = {
-                {
-                    n = G.UIT.C,
-                    config = {
-                        ref_table = { card },
-                        align = "cr",
-                        maxw = 1.25,
-                        padding = 0.1,
-                        r = 0.08,
-                        minw = 1.25,
-                        hover = true,
-                        shadow = true,
-                        colour = G.C.GREEN,
-                        button = 'kh_withdraw',
-                        func = "kh_can_withdraw",
-                    },
-                    nodes = {
-                        { n = G.UIT.B, config = { w = 0.1, h = 0.6 } },
-                        {
-                            n = G.UIT.C,
-                            config = { align = "tm" },
-                            nodes = {
-                                {
-                                    n = G.UIT.R,
-                                    config = { align = "cm", maxw = 1.25 },
-                                    nodes = {
-                                        {
-                                            n = G.UIT.T,
-                                            config = {
-                                                text = "Withdraw",
-                                                colour = G.C.UI.TEXT_LIGHT,
-                                                scale = 0.4,
-                                                shadow = true
-                                            }
-                                        }
-                                    }
-                                },
-                                {
-                                    n = G.UIT.R,
-                                    config = { align = "cm" },
-                                    nodes = {
-                                        {
-                                            n = G.UIT.T,
-                                            config = {
-                                                text = "$",
-                                                colour = G.C.WHITE,
-                                                scale = 0.4,
-                                                shadow = true
-                                            }
-                                        },
-                                        {
-                                            n = G.UIT.T,
-                                            config = {
-                                                text = "1",
-                                                colour = G.C.WHITE,
-                                                scale = 0.55,
-                                                shadow = true
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        ret.nodes[1].nodes[2].nodes = ret.nodes[1].nodes[2].nodes or {}
-        table.insert(ret.nodes[1].nodes[2].nodes, kh_withdraw_button)
-    end
-
-    return ret
-end
-
 SMODS.Joker {
     key = 'munnypouch',
     name = "Munny Pouch",
 
     loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = { key = "kh_munnypouch_credits", set = "Other" }
         info_queue[#info_queue + 1] = { key = "kh_munny_info", set = "Other" }
+        local numerator, denominator = SMODS.get_probability_vars(card, card.ability.extra.base, card.ability.extra.odds,
+            'munnypouch1')
         return {
             vars = {
+                numerator,
+                denominator,
             }
         }
     end,
-
     rarity = 2,
     atlas = "KHJokers",
     pos = { x = 4, y = 4 },
@@ -153,10 +24,82 @@ SMODS.Joker {
     perishable_compat = true,
 
     config = {
+        extra = {
+            base = 1,
+            odds = 8,
+            price = 1,
+        }
     },
 
     calculate = function(self, card, context)
+        if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+            card.ability.extra.price = pseudorandom('cool', 1, 5)
+            card.ability.extra_value = card.ability.extra_value + card.ability.extra.price
+            print(card.sell_cost)
+            card:set_cost()
+            return {
+                message = localize('k_val_up'),
+                colour = G.C.MONEY
+            }
+        end
+        if context.end_of_round and context.game_over == false and not context.blueprint then
+            if SMODS.pseudorandom_probability(card, 'munnypouch', card.ability.extra.base, card.ability.extra.odds, 'munnypouch1') then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        play_sound('tarot1')
+                        card.T.r = -0.2
+                        card:juice_up(0.3, 0.4)
+                        card.states.drag.is = true
+                        card.children.center.pinch.x = true
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.3,
+                            blockable = false,
+                            func = function()
+                                G.jokers:remove_card(card)
+                                card:remove()
+                                card = nil
+                                return true;
+                            end
+                        }))
+                        return true
+                    end
+                }))
+                -- Extinct/Survival Message
+                return {
+                    message = 'Stolen!'
+                }
+            else
+                return {
+                    message = 'Safe!'
+                }
+            end
+        end
+        if context.selling_self then
+            local payout = card.sell_cost
 
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    G.GAME.joker_buffer = G.GAME.joker_buffer + 1
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            local new_card = SMODS.add_card({ set = 'Joker', key = 'j_kh_munny', })
+
+                            if new_card then
+                                new_card.ability.extra.dollars = payout
+                            end
+
+                            G.GAME.joker_buffer = 0
+                            card_eval_status_text(card, 'extra', nil, nil, nil,
+                                { message = "Munny!", colour = G.C.BLUE })
+                            return true
+                        end
+                    }))
+
+                    return true
+                end
+            }))
+        end
     end
 }
 
@@ -184,12 +127,15 @@ SMODS.Joker {
 
     config = {
         extra = {
-            dollars = 1
+            dollars = 0
         }
     },
 
     calculate = function(self, card, context)
-
+        if context.starting_shop then
+            card.ability.extra.dollars = card.ability.extra.dollars - 1
+            card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Value Down!', colour = G.C.RED })
+        end
     end,
     calc_dollar_bonus = function(self, card)
         return card.ability.extra.dollars

@@ -1,4 +1,4 @@
-local function getResourceWithPrefix(prefix)
+function getResourceWithPrefix(prefix)
     local results = {}
     for k, v in pairs(G.P_CENTERS) do
         if k:sub(1, #prefix) == prefix then
@@ -8,10 +8,69 @@ local function getResourceWithPrefix(prefix)
     return results
 end
 
+SMODS.Tag {
+    key = "kingdom",
+    atlas = "modicon",
+    pos = { x = 0, y = 0 },
+    config = { odds = 3 },
+    apply = function(self, tag, context)
+        if context.type == 'store_joker_create' then
+            -- get all KH jokers
+            local joker_keys = getResourceWithPrefix("j_kh_")
+
+            -- remove unwanted jokers
+            for i = #joker_keys, 1, -1 do
+                if joker_keys[i] == "j_kh_nobody" or joker_keys[i] == "j_kh_munny" then
+                    table.remove(joker_keys, i)
+                end
+            end
+
+            -- track owned jokers
+            local owned_jokers = {}
+            for _, j in ipairs(G.jokers.cards) do
+                owned_jokers[j.config.center.key] = true
+            end
+
+            -- filter available KH jokers (not owned)
+            local available_jokers = {}
+            for _, key in ipairs(joker_keys) do
+                if not owned_jokers[key] then
+                    table.insert(available_jokers, key)
+                end
+            end
+
+            -- choose one at random
+            local random_joker = pseudorandom_element(available_jokers, pseudoseed("KH_RareTag"))
+
+            if random_joker then
+                local card = SMODS.create_card {
+                    set = "Joker",
+                    key = random_joker,
+                    area = context.area,
+                }
+                create_shop_card_ui(card, 'Joker', context.area)
+                card.states.visible = false
+
+                tag:yep('+', G.C.PURPLE, function()
+                    play_sound('timpani')
+                    card:start_materialize()
+                    card.ability.couponed = true
+                    card:set_cost()
+                    return true
+                end)
+                tag.triggered = true
+                return card
+            else
+                tag:nope()
+            end
+        end
+    end
+}
+
 SMODS.Tarot {
     key = 'awakening',
     set = 'Tarot',
-    atlas = "consumabels",
+    atlas = "KHConsumeables",
     pos = { x = 0, y = 0 },
     cost = 5,
     discovered = true,

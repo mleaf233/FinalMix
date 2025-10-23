@@ -61,33 +61,18 @@ SMODS.Joker {
 		end
 
 		if context.reroll_shop then
-			card.ability.extra.counter = card.ability.extra.counter + 1
+			card.ability.extra.counter = card.ability.extra.counter - 1
 
-			if card.ability.extra.counter == card.ability.extra.total then
-				card.ability.extra.counter = 0 -- resets reroll counter
+			if card.ability.extra.counter <= 0 then
+				card.ability.extra.counter = card.ability.extra.total -- resets reroll counter
 				local _card = context.blueprint_card or card
 				if card.ability.extra.condition_satisfied == true then
-					G.E_MANAGER:add_event(Event({
-						trigger = 'before',
-						delay = 0.0,
-						func = (function()
-							local _hand = card.ability.extra.old_most_played
-							update_hand_text({ sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3 }, {
-								handname = localize(_hand, 'poker_hands'),
-								chips = G.GAME.hands[_hand].chips,
-								mult = G.GAME.hands[_hand].mult,
-								level = G.GAME.hands[_hand].level
-							})
-							level_up_hand(_card, _hand, nil, card.ability.extra.levels)
-							update_hand_text({ sound = 'button', volume = 0.7, pitch = 1.1, delay = 0 }, {
-								mult = 0, chips = 0, handname = '', level = ''
-							})
-							return true
-						end)
-					}))
 					card_eval_status_text(_card, 'extra', nil, nil, nil, {
 						message = localize('k_level_up_ex'), colour = G.C.FILTER
 					})
+
+					local _hand = card.ability.extra.old_most_played
+					SMODS.smart_level_up_hand(card, _hand, nil, card.ability.extra.levels)
 					return nil, true
 				end
 			end

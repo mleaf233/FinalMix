@@ -11,7 +11,7 @@ SMODS.Consumable {
         return { vars = { (card.ability or self.config).max_highlighted } }
     end,
 
-    atlas = "consumabels",
+    atlas = "KHConsumeables",
     pos = { x = 1, y = 0 },
     cost = 4,
 
@@ -47,11 +47,13 @@ SMODS.Consumable {
 }
 
 
+
+
 SMODS.Consumable {
     key = 'gummiship',
     discovered = true,
     set = 'Spectral',
-    atlas = "consumabels",
+    atlas = "KHConsumeables",
     pos = { x = 2, y = 0 },
     loc_vars = function(self, info_queue, card)
         return { vars = { 1 } }
@@ -60,22 +62,11 @@ SMODS.Consumable {
     use = function(self, card, area, copier)
         local destructable_jokers = {}
         for i = 1, #G.jokers.cards do
-            if not G.jokers.cards[i].ability.eternal and not G.jokers.cards[i].getting_sliced then
-                table.insert(destructable_jokers, G.jokers.cards[i])
+            if G.jokers.cards[i] ~= card and not G.jokers.cards[i].ability.eternal and not G.jokers.cards[i].getting_sliced then
+                destructable_jokers[#destructable_jokers + 1] = G.jokers.cards[i]
             end
         end
-
-        local joker_to_destroy = pseudorandom_element(destructable_jokers, pseudoseed('gummiship'))
-
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.4,
-            func = function()
-                play_sound('tarot1')
-                card:juice_up(0.3, 0.5)
-                return true
-            end
-        }))
+        local joker_to_destroy = pseudorandom_element(destructable_jokers, 'kh_mickey')
 
         if joker_to_destroy then
             joker_to_destroy.getting_sliced = true
@@ -87,18 +78,27 @@ SMODS.Consumable {
                     return true
                 end
             }))
+            local rarity = joker_to_destroy.config.center.rarity
+            if rarity == 1 then
+                rarity = "Common"
+            elseif rarity == 2 then
+                rarity = "Uncommon"
+            elseif rarity == 3 then
+                rarity = "Rare"
+            elseif rarity == 4 then
+                rarity = "Legendary"
+            end
 
             G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 1.0,
                 func = function()
-                    G.hand:change_size(1)
+                    SMODS.add_card {
+                        set = 'Joker',
+                        rarity = rarity
+                    }
                     return true
                 end
             }))
         end
-
-        delay(0.5)
     end,
     can_use = function(self, card)
         for _, joker in ipairs(G.jokers.cards) do
@@ -107,14 +107,13 @@ SMODS.Consumable {
         return false
     end
 }
+
 --[[
 function Card:set_rank(new_rank)
     local suit_prefix = string.sub(self.base.suit, 1, 1)..'_'
 
-    -- Convert rank to number if it's a valid number string
     local rank_suffix = tonumber(new_rank) or new_rank
 
-    -- Handle rank conversion manually for valid numbers (only if it's a number)
     if type(rank_suffix) == "number" then
         if rank_suffix == 10 then
             rank_suffix = 'T'
@@ -131,7 +130,6 @@ function Card:set_rank(new_rank)
         end
     end
 
-    -- Set the base with the correct rank
     self:set_base(G.P_CARDS[suit_prefix..rank_suffix])
 end
 
@@ -141,7 +139,7 @@ SMODS.Consumable {
     pos = { x = 2, y = 0 },
     cost = 4,
     discovered = true,
-    atlas = "consumabels",
+    atlas = "KHConsumeables",
     config = { extra = { dollars = 10 } },
 
     loc_vars = function(self, info_queue, card)
@@ -151,7 +149,6 @@ SMODS.Consumable {
     use = function(self, card, area, copier)
         local used_tarot = copier or card
 
-        -- Juice the consumable card
         G.E_MANAGER:add_event(Event({
             trigger = 'after',
             delay = 0.4,
@@ -162,7 +159,6 @@ SMODS.Consumable {
             end
         }))
 
-        -- Flip + juice all cards in hand (forward animation)
         for i = 1, #G.hand.cards do
             local percent = 1.15 - (i - 0.999) / (#G.hand.cards - 0.998) * 0.3
             G.E_MANAGER:add_event(Event({
@@ -191,7 +187,6 @@ SMODS.Consumable {
             }))
         end
 
-        -- Flip + juice again (back animation)
         G.hand:change_size(-1)
         for i = 1, #G.hand.cards do
             G.E_MANAGER:add_event(Event({

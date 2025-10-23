@@ -1,0 +1,20 @@
+{
+
+  "Lua.workspace.library": [
+  "../smods",
+  "../smods-main",
+  "../JokerDisplay",
+	"../lovely/dump",
+  "../CardSleeves",
+   "../Partner",
+    "C:/Users/Children/OneDrive/Documents/vscode/balatro",
+    "C:/Users/Children/OneDrive/Documents/vscode/smods",
+  ],
+  "Lua.diagnostics.disable": [
+    "duplicate-set-field",
+    "need-check-nil"
+  ],
+  "Lua.diagnostics.globals": [
+    "love"
+  ],
+}

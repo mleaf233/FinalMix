@@ -1,118 +1,3 @@
-G.FUNCS.kh_can_reroll = function(e)
-    local reroll_cost = 4
-    local can_afford = to_big(G.GAME.dollars) >= to_big(reroll_cost)
-    if can_afford then
-        e.config.colour = G.C.GREEN
-        e.config.button = 'kh_reroll'
-    else
-        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-        e.config.button = nil
-    end
-end
-
-G.FUNCS.kh_reroll = function(e)
-    local ref = e.config and e.config.ref_table
-    local card = ref and ref[1]
-
-    local reroll_cost = 4
-    card.ability.current_task = nil
-
-    G.E_MANAGER:add_event(Event({
-        trigger = 'after',
-        delay = 0.4,
-        func = function()
-            ease_dollars(-math.min(reroll_cost, G.GAME.dollars), true)
-            return true
-        end
-    }))
-end
-
-
-
-local use_and_sell_buttonsref = G.UIDEF.use_and_sell_buttons
-function G.UIDEF.use_and_sell_buttons(card)
-    local ret = use_and_sell_buttonsref(card)
-
-
-    if card.config and card.config.center_key == 'j_kh_helpwanted' then
-        local kh_reroll_button = {
-            n = G.UIT.C,
-            config = { align = "cr" },
-            nodes = {
-                {
-                    n = G.UIT.C,
-                    config = {
-                        ref_table = { card },
-                        align = "cr",
-                        maxw = 1.25,
-                        padding = 0.1,
-                        r = 0.08,
-                        minw = 1.25,
-                        hover = true,
-                        shadow = true,
-                        colour = G.C.GREEN,
-                        button = 'kh_reroll',
-                        func = "kh_can_reroll",
-                    },
-                    nodes = {
-                        { n = G.UIT.B, config = { w = 0.1, h = 0.6 } },
-                        {
-                            n = G.UIT.C,
-                            config = { align = "tm" },
-                            nodes = {
-                                {
-                                    n = G.UIT.R,
-                                    config = { align = "cm", maxw = 1.25 },
-                                    nodes = {
-                                        {
-                                            n = G.UIT.T,
-                                            config = {
-                                                text = "Reroll",
-                                                colour = G.C.UI.TEXT_LIGHT,
-                                                scale = 0.4,
-                                                shadow = true
-                                            }
-                                        }
-                                    }
-                                },
-                                {
-                                    n = G.UIT.R,
-                                    config = { align = "cm" },
-                                    nodes = {
-                                        {
-                                            n = G.UIT.T,
-                                            config = {
-                                                text = "$",
-                                                colour = G.C.WHITE,
-                                                scale = 0.4,
-                                                shadow = true
-                                            }
-                                        },
-                                        {
-                                            n = G.UIT.T,
-                                            config = {
-                                                text = "4",
-                                                colour = G.C.WHITE,
-                                                scale = 0.55,
-                                                shadow = true
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        ret.nodes[1].nodes[2].nodes = ret.nodes[1].nodes[2].nodes or {}
-        table.insert(ret.nodes[1].nodes[2].nodes, kh_reroll_button)
-    end
-
-    return ret
-end
-
 local task_rewards = {
 
     play_face = function(card)
@@ -211,10 +96,10 @@ SMODS.Joker {
             task_desc = "Destroy 7 cards (" .. prog .. "/7)"
             reward_desc = "+1 Discard"
         elseif card.ability.current_task == "selling" then
-            task_desc = "Sell 13 cards (" .. prog .. "/13)"
+            task_desc = "Sell 7 cards (" .. prog .. "/7)"
             reward_desc = "-1 Ante"
         elseif card.ability.current_task == "skipping" then
-            task_desc = "Skip 4 Blinds (" .. prog .. "/4)"
+            task_desc = "Skip 4 Blinds (" .. prog .. "/2)"
             reward_desc = "+1 Hand Size"
         elseif card.ability.current_task == "shopping" then
             local spent = card.ability.money_spent or 0
@@ -358,13 +243,13 @@ SMODS.Joker {
                 end
             end
 
-            if c == "selling" and card.ability.progress < 13 then
+            if c == "selling" and card.ability.progress < 7 then
                 if context.selling_card then
                     card.ability.progress = (card.ability.progress or 0) + 1
                     card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Upgrade!", colour = G.C.GREEN })
                 end
 
-                if card.ability.progress >= 13 then
+                if card.ability.progress >= 7 then
                     local task_key = card.ability.current_task
                     card.ability.current_task = nil
 
@@ -382,13 +267,13 @@ SMODS.Joker {
                 end
             end
 
-            if c == "skipping" and card.ability.progress < 4 then
+            if c == "skipping" and card.ability.progress < 2 then
                 if context.skip_blind and not context.blueprint then
                     card.ability.progress = (card.ability.progress or 0) + 1
                     card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Upgrade!", colour = G.C.GREEN })
                 end
 
-                if card.ability.progress >= 4 then
+                if card.ability.progress >= 2 then
                     local task_key = card.ability.current_task
                     card.ability.current_task = nil
 
