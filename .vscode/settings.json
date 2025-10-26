@@ -9,6 +9,7 @@
    "../Partner",
     "C:/Users/Children/OneDrive/Documents/vscode/balatro",
     "C:/Users/Children/OneDrive/Documents/vscode/smods",
+    "../ValueManip"
   ],
   "Lua.diagnostics.disable": [
     "duplicate-set-field",

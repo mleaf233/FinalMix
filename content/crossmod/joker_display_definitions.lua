@@ -715,4 +715,79 @@ jd_def["j_kh_munny"] = {
     end
 }
 
--- to do: invitation and magnet
+jd_def["j_kh_tamagotchi"] = {
+    text = {
+        {
+            border_nodes = {
+                { text = "X" },
+                { ref_table = "card.ability.extra", ref_value = "x_mult", retrigger_type = "exp" }
+            }
+        }
+    }
+}
+
+jd_def["j_kh_magnet"] = {
+    text = {
+        { text = "+$" },
+        { ref_table = "card.joker_display_values", ref_value = "dollars", retrigger_type = "mult" },
+    },
+    text_config = { colour = G.C.GOLD },
+    reminder_text = {
+        { text = "(" },
+        { text = "Steel Card" },
+        { text = ")" },
+    },
+    calc_function = function(card)
+        local dollars = 0
+        local playing_hand = next(G.play.cards)
+        for _, playing_card in ipairs(G.hand.cards) do
+            if playing_hand or not playing_card.highlighted then
+                if not (playing_card.facing == 'back') and not playing_card.debuff and playing_card.ability.name and playing_card.ability.name == 'Steel Card' then
+                    dollars = dollars +
+                        3 * JokerDisplay.calculate_card_triggers(playing_card, nil, true)
+                end
+            end
+        end
+        card.joker_display_values.dollars = dollars
+    end
+}
+
+jd_def["j_kh_kingdomhearts"] = {
+
+    text = {
+        { ref_table = "card.joker_display_values", ref_value = "hands",    colour = G.C.CHIPS },
+        { text = "Hands, " },
+        { ref_table = "card.joker_display_values", ref_value = "discards", colour = G.C.MULT },
+        { text = "Discards" },
+    },
+    reminder_text = {
+        { text = "(" },
+        { text = "Boss Blind" },
+        { text = ")" },
+    },
+
+    calc_function = function(card)
+        card.joker_display_values.hands = card.ability.extra.hands_remaining
+        card.joker_display_values.discards = card.ability.extra.discards_remaining
+    end
+
+}
+jd_def["j_kh_invitation"] = {
+
+    text = {
+        { text = "(" },
+        { ref_table = "card.joker_display_values", ref_value = "sold_remaining" },
+        { text = "/" },
+        { ref_table = "card.ability.extra",        ref_value = "sold" },
+        { text = ")" },
+    },
+
+    text_config = { colour = G.C.UI.TEXT_INACTIVE },
+
+    calc_function = function(card)
+        card.joker_display_values.sold_remaining = card.ability.extra.sold_remaining
+    end
+}
+
+
+-- to do: command menu

@@ -29,7 +29,7 @@ SMODS.Joker {
 			most_played = 'Pair',
 			old_most_played = 'Pair',
 			levels = 1,
-			counter = 0,
+			counter = 4,
 			total = 4
 		}
 	},

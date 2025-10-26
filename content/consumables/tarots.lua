@@ -1,13 +1,3 @@
-function getResourceWithPrefix(prefix)
-    local results = {}
-    for k, v in pairs(G.P_CENTERS) do
-        if k:sub(1, #prefix) == prefix then
-            table.insert(results, k)
-        end
-    end
-    return results
-end
-
 SMODS.Tag {
     key = "kingdom",
     atlas = "modicon",
@@ -16,7 +6,7 @@ SMODS.Tag {
     apply = function(self, tag, context)
         if context.type == 'store_joker_create' then
             -- get all KH jokers
-            local joker_keys = getResourceWithPrefix("j_kh_")
+            local joker_keys = GetResourceWithPrefix("j_kh_")
 
             -- remove unwanted jokers
             for i = #joker_keys, 1, -1 do
@@ -77,7 +67,7 @@ SMODS.Tarot {
 
     use = function(self, card, area, copier)
         local used_card = copier or card
-        local joker_keys = getResourceWithPrefix("j_kh_")
+        local joker_keys = GetResourceWithPrefix("j_kh_")
 
         for i = #joker_keys, 1, -1 do
             if joker_keys[i] == "j_kh_nobody" or joker_keys[i] == "j_kh_munny" then

@@ -119,7 +119,7 @@ SMODS.Joker {
 			local left = G.jokers.cards[pos - 1]
 			local right = G.jokers.cards[pos + 1]
 
-			-- Revert previously buffed jokers that are no longer adjacent
+			-- Reset buffed jokers that are no longer adjacent
 			local new_buffed = {}
 			for _, old_card in pairs(card.ability.extra.buffed) do
 				if old_card ~= left and old_card ~= right and old_card.ability then
@@ -133,7 +133,7 @@ SMODS.Joker {
 			end
 			card.ability.extra.buffed = new_buffed
 
-			-- Apply boost to current adjacent jokers
+			-- Apply buff to current adjacent jokers
 			for _, adj in pairs({ left, right }) do
 				local name = adj.ability.name
 				local is_excluded = Exclude_list[name]

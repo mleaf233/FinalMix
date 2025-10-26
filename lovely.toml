@@ -242,7 +242,209 @@ match_indent = true
 payload = '''
 kh = {
     moogle_shop = false,
+    moogle_skip = false,
     luxord_sold = false,
     luxord_destroyed = false,
 },
 '''
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "extras = create_UIBox_blind_tag(type, run_info)"
+position = "after"
+payload = '''
+    -- Add second skip option
+    if extras and not run_info and G.GAME.moogle_skip then
+        G.GAME.round_resets.blind_tags = G.GAME.round_resets.blind_tags or {}
+        local alt_key = type..'_alt'
+        if not G.GAME.round_resets.blind_tags[alt_key] then
+            G.GAME.round_resets.blind_tags[alt_key] = get_next_tag_key()
+        end
+        
+        -- Create second tag UI
+        local _tag = Tag(G.GAME.round_resets.blind_tags[alt_key], nil, type)
+        local _tag_ui, _tag_sprite = _tag:generate_UI()
+        _tag_sprite.states.collide.can = true
+        
+        local skip2 = {n=G.UIT.R, config={id = 'tag_container_alt', ref_table = _tag, align = "cm"}, nodes={
+            {n=G.UIT.R, config={align = 'tm', minh = 0.1}, nodes={
+            }},
+            {n=G.UIT.R, config={id = 'tag_'..alt_key, align = "cm", r = 0.1, padding = 0.1, minw = 1, can_collide = true, ref_table = _tag_sprite}, nodes={
+                {n=G.UIT.C, config={id = 'tag_desc_alt', align = "cm", minh = 1}, nodes={
+                    _tag_ui
+                }},
+                {n=G.UIT.C, config={align = "cm", colour = G.C.RED, minh = 0.6, minw = 2, maxw = 2, padding = 0.07, r = 0.1, shadow = true, hover = true, one_press = true, button = 'skip_blind_alt', func = 'hover_tag_proxy', ref_table = _tag}, nodes={
+                    {n=G.UIT.T, config={text = localize('b_skip_blind'), scale = 0.4, colour = G.C.WHITE}}
+                }}
+            }}
+        }}
+        
+        -- Wrap both skip options
+        extras = {
+            n = G.UIT.R, 
+            config = {align = "cm", padding = 0.1}, 
+            nodes = {
+                extras,
+                skip2
+            }
+        }
+    end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''          local _tag = e.UIBox:get_UIE_by_ID('tag_'..e.config.id)
+          local _tag_container = e.UIBox:get_UIE_by_ID('tag_container')'''
+position = "after"
+payload = '''          local _tag_alt = e.UIBox:get_UIE_by_ID('tag_'..e.config.id..'_alt')
+          local _tag_container_alt = e.UIBox:get_UIE_by_ID('tag_container_alt')'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''          if _tag_container and not G.SETTINGS.tutorial_complete and not G.SETTINGS.tutorial_progress.completed_parts['shop_1'] then _tag_container.states.visible = false
+          elseif _tag_container then  _tag_container.states.visible = true end'''
+position = "at"
+payload = '''         
+          for _, container in ipairs({_tag_container, _tag_container_alt}) do
+            if container and not G.SETTINGS.tutorial_complete and not G.SETTINGS.tutorial_progress.completed_parts['shop_1'] then 
+              container.states.visible = false
+            elseif container then  
+              container.states.visible = true 
+            end
+          end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''            if _tag and _tag_container then 
+              _tag_container.children[2].config.draw_after = false
+              _tag_container.children[2].config.colour = G.C.BLACK
+              _tag.children[2].config.button = 'skip_blind'
+              _tag.config.outline_colour = adjust_alpha(G.C.BLUE, 0.5)
+              _tag.children[2].config.hover = true
+              _tag.children[2].config.colour = G.C.RED
+              _tag.children[2].children[1].config.colour = G.C.UI.TEXT_LIGHT
+              local _sprite = _tag.config.ref_table
+              _sprite.config.force_focus = nil
+            end'''
+position = "at"
+payload = '''
+            for i, _tag_obj in ipairs({_tag, _tag_alt}) do
+              local _container = i == 1 and _tag_container or _tag_container_alt
+              if _tag_obj and _container then 
+                _container.children[2].config.draw_after = false
+                _container.children[2].config.colour = G.C.BLACK
+                _tag_obj.children[2].config.button = i == 1 and 'skip_blind' or 'skip_blind_alt'
+                _tag_obj.config.outline_colour = adjust_alpha(i == 1 and G.C.BLUE or G.C.RED, 0.5)
+                _tag_obj.children[2].config.hover = true
+                _tag_obj.children[2].config.colour = i == 1 and G.C.RED or G.C.RED
+                _tag_obj.children[2].children[1].config.colour = G.C.UI.TEXT_LIGHT
+                local _sprite = _tag_obj.config.ref_table
+                _sprite.config.force_focus = nil
+              end
+            end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = ''' if _tag and _tag_container then 
+              if G.GAME.round_resets.blind_states[e.config.id] == 'Skipped' or
+                 G.GAME.round_resets.blind_states[e.config.id] == 'Defeated' then
+                _tag_container.children[2]:set_role({xy_bond = 'Weak'})
+                _tag_container.children[2]:align(0, 10)
+                _tag_container.children[1]:set_role({xy_bond = 'Weak'})
+                _tag_container.children[1]:align(0, 10)
+              end
+              if G.GAME.round_resets.blind_states[e.config.id] == 'Skipped' then
+                _blind_choice.children.alert = UIBox{
+                  definition = create_UIBox_card_alert({text_rot = -0.35, no_bg = true,text = localize('k_skipped_cap'), bump_amount = 1, scale = 0.9, maxw = 3.4}),
+                  config = {
+                    align="tmi",
+                    offset = {x = 0, y = 2.2},
+                    major = _blind_choice, parent = _blind_choice}
+                }
+              end
+              _tag.children[2].config.button = nil
+              _tag.config.outline_colour = G.C.UI.BACKGROUND_INACTIVE
+              _tag.children[2].config.hover = false
+              _tag.children[2].config.colour = G.C.UI.BACKGROUND_INACTIVE
+              _tag.children[2].children[1].config.colour = G.C.UI.TEXT_INACTIVE
+              local _sprite = _tag.config.ref_table
+              _sprite.config.force_focus = true
+            end'''
+position = "before"
+payload = '''
+            for i, _tag_obj in ipairs({_tag, _tag_alt}) do
+              local _container = i == 1 and _tag_container or _tag_container_alt
+            end'''
+match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = ''' if _tag and _tag_container then 
+              if G.GAME.round_resets.blind_states[e.config.id] == 'Skipped' or
+                 G.GAME.round_resets.blind_states[e.config.id] == 'Defeated' then
+                _tag_container.children[2]:set_role({xy_bond = 'Weak'})
+                _tag_container.children[2]:align(0, 10)
+                _tag_container.children[1]:set_role({xy_bond = 'Weak'})
+                _tag_container.children[1]:align(0, 10)
+              end
+              if G.GAME.round_resets.blind_states[e.config.id] == 'Skipped' then
+                _blind_choice.children.alert = UIBox{
+                  definition = create_UIBox_card_alert({text_rot = -0.35, no_bg = true,text = localize('k_skipped_cap'), bump_amount = 1, scale = 0.9, maxw = 3.4}),
+                  config = {
+                    align="tmi",
+                    offset = {x = 0, y = 2.2},
+                    major = _blind_choice, parent = _blind_choice}
+                }
+              end
+              _tag.children[2].config.button = nil
+              _tag.config.outline_colour = G.C.UI.BACKGROUND_INACTIVE
+              _tag.children[2].config.hover = false
+              _tag.children[2].config.colour = G.C.UI.BACKGROUND_INACTIVE
+              _tag.children[2].children[1].config.colour = G.C.UI.TEXT_INACTIVE
+              local _sprite = _tag.config.ref_table
+              _sprite.config.force_focus = true
+            end'''
+position = "at"
+payload = '''
+            for i, _tag_obj in ipairs({_tag, _tag_alt}) do
+              local _container = i == 1 and _tag_container or _tag_container_alt
+              if _tag_obj and _container then 
+                if G.GAME.round_resets.blind_states[e.config.id] == 'Skipped' then
+                  _blind_choice.children.alert = UIBox{
+                    definition = create_UIBox_card_alert({text_rot = -0.35, no_bg = true,text = localize('k_skipped_cap'), bump_amount = 1, scale = 0.9, maxw = 3.4}),
+                    config = {
+                      align="tmi",
+                      offset = {x = 0, y = 2.2},
+                      major = _blind_choice, parent = _blind_choice}
+                  }
+                end
+                if G.GAME.round_resets.blind_states[e.config.id] == 'Skipped' or
+                   G.GAME.round_resets.blind_states[e.config.id] == 'Defeated' then
+                  _container.children[2]:set_role({xy_bond = 'Weak'})
+                  _container.children[2]:align(0, 10)
+                  _container.children[1]:set_role({xy_bond = 'Weak'})
+                  _container.children[1]:align(0, 10)
+                end
+                
+                _tag_obj.children[2].config.button = nil
+                _tag_obj.config.outline_colour = G.C.UI.BACKGROUND_INACTIVE
+                _tag_obj.children[2].config.hover = false
+                _tag_obj.children[2].config.colour = G.C.UI.BACKGROUND_INACTIVE
+                _tag_obj.children[2].children[1].config.colour = G.C.UI.TEXT_INACTIVE
+                local _sprite = _tag_obj.config.ref_table
+                _sprite.config.force_focus = true
+              end
+            end'''
+match_indent = true
+
+

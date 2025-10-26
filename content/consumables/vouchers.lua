@@ -1,10 +1,23 @@
-SMODS.Voucher { -- Credits to All in Jest!
-    key = 'moogleshop',
+SMODS.Voucher {
+    key = 'moogleskip',
     atlas = "KHVouchers",
     pos = { x = 0, y = 0 },
     config = { extra = {} },
     loc_vars = function(self, info_queue, card)
     end,
+    redeem = function(self, card)
+        G.GAME.moogle_skip = true
+    end
+}
+
+SMODS.Voucher { -- Credits to All in Jest!
+    key = 'moogleshop',
+    atlas = "KHVouchers",
+    pos = { x = 1, y = 0 },
+    config = { extra = {} },
+    loc_vars = function(self, info_queue, card)
+    end,
+    requires = { 'v_kh_moogleskip' },
     calculate = function(self, card, context)
         if context.skip_blind or (context.ending_booster and G.GAME.kh.moogle_shop) then
             stop_use()
@@ -43,5 +56,3 @@ SMODS.Voucher { -- Credits to All in Jest!
         end
     end
 }
-
--- To Do: Make tier 1 voucher Which adds an extra option to the skip blind button

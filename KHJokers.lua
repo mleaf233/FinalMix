@@ -100,6 +100,14 @@ KH.config_tab = function()
         ref_value = "enable_spectrals",
         callback = function() KH:save_config() end
       }),
+      create_toggle({
+        id = "enable_vouchers",
+        label = localize("k_khjokers_config_vouchers"),
+        info = { localize('k_khjokers_config_restart') },
+        ref_table = KH.config,
+        ref_value = "enable_vouchers",
+        callback = function() KH:save_config() end
+      }),
     }
   }
 
@@ -276,16 +284,16 @@ end
 if CardSleeves then
   SMODS.load_file("content/crossmod/cardsleeves.lua")()
 end
-
-SMODS.load_file("content/consumables/vouchers.lua")()
-
+if KH.config.enable_vouchers then
+  SMODS.load_file("content/consumables/vouchers.lua")()
+end
 -- Decks
 SMODS.Back {
   key = 'kingdom',
   atlas = 'KHDecks',
   pos = { x = 0, y = 0 },
   discovered = true,
-  config = { vouchers = { "v_overstock_norm" }, },
+  config = { vouchers = { "v_overstock_norm", "v_kh_moogleskip" }, },
   loc_vars = function(self, info_queue, center)
   end,
   apply = function(self, back)
@@ -360,3 +368,18 @@ and each rank has a unique effect, and the suits can have an effect which applie
  also for magic cards basiclaly after beating a blind in balatro you get sent to the shop, which will have magic booster packs
  which let you select one magic card to bring to the consumable slot and use later
 ]]
+
+--[[ Hook hover_tag_proxy to handle alt skip button
+local hover_tag_proxy_ref = G.FUNCS.hover_tag_proxy
+function G.FUNCS.hover_tag_proxy(args)
+  local result = hover_tag_proxy_ref(args)
+
+  if not args or not args.ref_table then return result end
+
+  -- Handle alt skip button
+  if args.button == 'skip_blind_alt' then
+    G.FUNCS.skip_blind_alt(args)
+  end
+
+  return result
+end--]]

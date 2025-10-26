@@ -113,9 +113,20 @@ return {
 			},
 		},
 		Joker = {
-
 			j_kh_magnet = {
 				name = '{E:kh_pulse}Munny Magnet',
+				text = {
+					"Steel cards are moved",
+					"to the top of",
+					"your {C:attention}full deck{}",
+					"and give {C:money}$3{}",
+					"when triggered",
+
+				},
+			},
+
+			j_kh_kingdomhearts = {
+				name = '{E:kh_pulse}Kingdom Hearts',
 				text = {
 					"Unused Hands/Discards",
 					"this ante",
@@ -123,6 +134,17 @@ return {
 					"the {C:attention}boss blind{}",
 					"{C:inactive}(Currently {C:blue}#2#{}{C:inactive} Hands, {C:red}#1#{}{C:inactive} Discards)"
 
+				},
+			},
+
+			j_kh_tamagotchi = {
+				name = '{E:kh_pulse}Tamagotchi',
+				text = {
+					"Destroy all held consumables",
+					"at the end of the {C:attention}shop",
+					"gains {X:mult,C:white}X#2#{} for",
+					"each one destroyed",
+					"{C:inactive}(Currently {X:mult,C:white}X#1#{C:inactive} Mult)",
 				},
 			},
 
@@ -148,9 +170,10 @@ return {
 						"it's {C:attention}modes{}:",
 					},
 					{
-						"Destroy least common",
-						"card when a hand",
-						"is played",
+						"If played hand contains",
+						"at least {C:attention}4{} cards",
+						"destroy all cards",
+						"held in hand",
 					},
 				},
 			},
@@ -206,9 +229,7 @@ return {
 						"it's {C:attention}modes{}",
 					},
 					{
-						"Gives {X:mult,C:white}X1{} per",
-						"unique rarity in your",
-						"Joker Slots"
+						"{X:mult,C:white}X4{} Mult"
 					},
 				},
 			},
@@ -576,6 +597,13 @@ return {
 					"when a {C:attention}Blind{} is skipped"
 				},
 			},
+			v_kh_moogleskip = {
+				name = "Moogle Skip",
+				text = {
+					"{C:attention}+1{} skip button",
+					"available in blind selection",
+				},
+			},
 		},
 		Other = {
 
@@ -678,6 +706,42 @@ return {
 					"{C:inactive}(Currently {V:1}#1#{}{C:inactive}){}"
 				}
 			},
+
+			kh_attack = {
+				name = 'Attack',
+				text = {
+					"If played hand contains",
+					"at least {C:attention}4{} cards",
+					"destroy all cards",
+					"held in hand",
+				}
+			},
+
+			kh_magic = {
+				name = 'Magic',
+				text = {
+					"After scoring",
+					"Return first card",
+					"played to hand",
+				}
+			},
+
+			kh_items = {
+				name = 'Items',
+				text = {
+					"When an {C:attention}Ace{} is played,",
+					"create a random",
+					"{C:attention}consumable{}",
+					"{C:inactive}(Must Have Room)",
+				}
+			},
+
+			kh_drive = {
+				name = 'Drive',
+				text = {
+					"{X:mult,C:white}X4{} Mult"
+				}
+			},
 		},
 
 		Spectral = {
@@ -746,6 +810,7 @@ return {
 			k_khjokers_config_jokers = "Enable KH Jokers",
 			k_khjokers_config_tarots = "Enable Tarot cards",
 			k_khjokers_config_spectrals = "Enable Spectral cards",
+			k_khjokers_config_vouchers = "Enable Vouchers",
 			k_khjokers_config_seal = "Enable Seal",
 			k_khjokers_config_blind = "Enable Boss Blind",
 			k_khjokers_config_menu_toggle = "Toggle Custom Title Screen",

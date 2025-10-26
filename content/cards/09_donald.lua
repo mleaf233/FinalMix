@@ -8,7 +8,6 @@ SMODS.Joker {
 
         if G.jokers then
             local copied_joker = GetJokerByKey(G.jokers.cards, copied_joker_key)
-            -- If a match is found, update the copied_name
             if copied_joker then
                 copied_name = copied_joker.config.center.name
             end

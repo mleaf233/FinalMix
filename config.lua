@@ -4,5 +4,6 @@ return {
     ["enable_spectrals"] = true,
     ["enable_seal"] = true,
     ["enable_blind"] = true,
+    ["enable_vouchers"] = true,
     ["menu_toggle"] = true,
 }

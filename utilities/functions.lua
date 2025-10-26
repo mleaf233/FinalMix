@@ -75,6 +75,16 @@ function GetJokerByKey(jokers, key)
     return nil
 end
 
+function GetResourceWithPrefix(prefix)
+    local results = {}
+    for k, v in pairs(G.P_CENTERS) do
+        if k:sub(1, #prefix) == prefix then
+            table.insert(results, k)
+        end
+    end
+    return results
+end
+
 -- Gets a random Poker Hand
 function GetPokerHand()
     local poker_hands = {}

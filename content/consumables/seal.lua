@@ -117,67 +117,66 @@ SMODS.Seal {
 
     calculate = function(self, card, context)
         if context.main_scoring and context.cardarea == G.play then
-                local valid_cards = {}
-                for _, c in ipairs(G.hand.cards) do
-                    if not c.lucky_reserved then
-                        table.insert(valid_cards, c)
+            local valid_cards = {}
+            for _, c in ipairs(G.hand.cards) do
+                if not c.lucky_reserved then
+                    table.insert(valid_cards, c)
+                end
+            end
+
+            if #valid_cards > 0 then
+                local seed_str = "luckyemblem" .. tostring(card:get_id() or card.id or math.random())
+                local chosen = pseudorandom_element(valid_cards, pseudoseed(seed_str))
+                -- reserve it now so other seals won't pick it
+                chosen.lucky_reserved = true
+
+                --local chosen = pseudorandom_element(valid_cards, pseudoseed("coolio"))
+                --local chosen = pseudorandom_element(valid_cards, pseudoseed("luckyremblem" .. tostring(card.base.id)))
+
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.4,
+                    func = function()
+                        play_sound('tarot1')
+                        chosen:juice_up(0.3, 0.5)
+                        return true
                     end
-                    
-                end
+                }))
 
-                if #valid_cards > 0 then
-                    local seed_str = "luckyemblem" .. tostring(card:get_id() or card.id or math.random())
-                    local chosen = pseudorandom_element(valid_cards, pseudoseed(seed_str))
-                    -- reserve it now so other seals won't pick it
-                    chosen.lucky_reserved = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.15,
+                    func = function()
+                        chosen:flip()
+                        play_sound('card1', 1)
+                        chosen:juice_up(0.3, 0.3)
+                        return true
+                    end
+                }))
 
-                    --local chosen = pseudorandom_element(valid_cards, pseudoseed("coolio"))
-                    --local chosen = pseudorandom_element(valid_cards, pseudoseed("luckyremblem" .. tostring(card.base.id)))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.1,
+                    func = function()
+                        assert(SMODS.change_base(chosen, card.base.suit, card.base.value))
+                        --chosen:set_ability("m_lucky", true)
+                        return true
+                    end
+                }))
 
-                    G.E_MANAGER:add_event(Event({
-                        trigger = 'after',
-                        delay = 0.4,
-                        func = function()
-                            play_sound('tarot1')
-                            chosen:juice_up(0.3, 0.5)
-                            return true
-                        end
-                    }))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.15,
+                    func = function()
+                        chosen:flip()
+                        play_sound('tarot2', 1, 0.6)
+                        chosen:juice_up(0.3, 0.3)
+                        return true
+                    end
+                }))
 
-                    G.E_MANAGER:add_event(Event({
-                        trigger = 'after',
-                        delay = 0.15,
-                        func = function()
-                            chosen:flip()
-                            play_sound('card1', 1)
-                            chosen:juice_up(0.3, 0.3)
-                            return true
-                        end
-                    }))
-
-                    G.E_MANAGER:add_event(Event({
-                        trigger = 'after',
-                        delay = 0.1,
-                        func = function()
-                            assert(SMODS.change_base(chosen, card.base.suit, card.base.value))
-                            --chosen:set_ability("m_lucky", true)
-                            return true
-                        end
-                    }))
-
-                    G.E_MANAGER:add_event(Event({
-                        trigger = 'after',
-                        delay = 0.15,
-                        func = function()
-                            chosen:flip()
-                            play_sound('tarot2', 1, 0.6)
-                            chosen:juice_up(0.3, 0.3) 
-                            return true
-                        end
-                    }))
-                    
-                    delay(0.5)
-                end
+                delay(0.5)
+            end
         end
     end
 }

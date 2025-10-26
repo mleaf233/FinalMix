@@ -32,7 +32,7 @@ SMODS.Joker {
 
     update = function(self, card)
     end,
-    calculate = function(self,card,context)
+    calculate = function(self, card, context)
         if context.selling_card then
             if context.card.ability.set == 'Joker' then
                 card.ability.extra.sold_remaining = card.ability.extra.sold_remaining - 1
@@ -40,23 +40,21 @@ SMODS.Joker {
             end
             if card.ability.extra.sold_remaining <= 0 then
                 card.ability.extra.sold_remaining = card.ability.extra.sold
-                      G.E_MANAGER:add_event(Event({
-                        func = function()
-                            SMODS.add_card {
-                                set = 'Joker',
-                                edition = 'e_negative',
-                                stickers = { "perishable" },
-                                force_stickers = true
-                            }
-                            return true
-                        end
-                    }))      
-            end 
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        SMODS.add_card {
+                            set = 'Joker',
+                            edition = 'e_negative',
+                            stickers = { "perishable" },
+                            force_stickers = true
+                        }
+                        return true
+                    end
+                }))
+            end
             return {
                 dollars = card.ability.extra.dollars
-            }    
-
-
+            }
         end
     end
 }
