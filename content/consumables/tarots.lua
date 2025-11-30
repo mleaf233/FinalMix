@@ -4,7 +4,7 @@ SMODS.Tag {
     unlocked = true,
     discovered = true,
     pos = { x = 0, y = 0 },
-    config = { odds = 3 },
+    config = {},
     apply = function(self, tag, context)
         if context.type == 'store_joker_create' then
             local joker_keys = GetResourceWithPrefix("j_kh_")

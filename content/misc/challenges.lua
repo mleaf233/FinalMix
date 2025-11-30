@@ -11,7 +11,6 @@ SMODS.Challenge {
     custom = {
       { id = "kh_got_it_memorized" },
       { id = "no_skipping" },
-      { id = "no_reroll_reset" },
     },
   },
   deck = {
