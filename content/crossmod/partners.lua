@@ -1,4 +1,5 @@
-Partner_API.Partner {
+local pnr_def = Partner_API.Partner
+pnr_def {
     key = "sora",
     name = "Sora",
     unlocked = true,
@@ -29,7 +30,7 @@ Partner_API.Partner {
     end,
 }
 
-Partner_API.Partner { -- art is currently placeholder, will change eventually
+pnr_def { -- art is currently placeholder, will change eventually
     key = "donald",
     name = "Donald",
     unlocked = true,
@@ -90,7 +91,7 @@ Partner_API.Partner { -- art is currently placeholder, will change eventually
     end,
 }
 
-Partner_API.Partner {
+pnr_def {
     key = "mickey",
     name = "Mickey",
     unlocked = true,
@@ -169,7 +170,8 @@ Partner_API.Partner {
     end
 }
 
-Partner_API.Partner {
+
+pnr_def {
     key = "randompartner",
     name = "Random Partner",
     unlocked = true,
@@ -178,9 +180,52 @@ Partner_API.Partner {
     loc_txt = {},
     atlas = "KHPartner",
     config = {
-        extra = {}
+        extra = {
+            percent = 0,
+            percent_plus = 1,
+            cost = 1,
+        }
     },
     link_config = { j_kh_randomjoker = 1 },
+    loc_vars = function(self, info_queue, card)
+        local link_level = self:get_link_level()
+        local benefits = 1
+        if link_level == 1 then benefits = 2 end
+        return {
+            vars = {
+                card.ability.extra.percent,
+                card.ability.extra.percent_plus * benefits,
+                card.ability.extra.cost,
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.final_scoring_step and card.ability.extra.percent > 0 then
+            BalancePercent(card, (card.ability.extra.percent * 0.01))
+        end
+        if context.partner_click and ((to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost)) then
+            local link_level = self:get_link_level()
+            local benefits = 1
+            if link_level == 1 then benefits = 2 end
+            card.ability.extra.percent = card.ability.extra.percent + card.ability.extra.percent_plus * benefits
+            ease_dollars(-card.ability.extra.cost)
+            card_eval_status_text(card, "dollars", -card.ability.extra.cost)
+        end
+    end
+}
+pnr_def {
+    key = "nobody",
+    name = "Nobody",
+    unlocked = true,
+    discovered = true,
+    pos = { x = 4, y = 0 },
+    loc_txt = {},
+    atlas = "KHPartner",
+    config = {
+        extra = {}
+    },
+    link_config = { j_kh_nobody = 1 },
     loc_vars = function(self, info_queue, card)
         return {
             vars = {}
@@ -195,7 +240,7 @@ function SMODS.score_card(card, context)
     if G.GAME.selected_partner_card
         and G.GAME.selected_partner_card.ability
         and G.GAME.selected_partner_card.config
-        and G.GAME.selected_partner_card.config.center.key == "pnr_kh_randompartner" then
+        and G.GAME.selected_partner_card.config.center.key == "pnr_kh_nobody" then
         has_random_partner = true
     end
 

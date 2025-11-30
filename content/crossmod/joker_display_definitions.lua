@@ -356,7 +356,6 @@ jd_def["j_kh_donald"] = {
             ref_table = "card.joker_display_values",
             ref_value = "copied_name",
             colour = G.C.ATTENTION,
-            newline = true,
         }
     },
 
@@ -531,7 +530,6 @@ jd_def["j_kh_moogle"] = {
             ref_value = "joker_count",
             scale = 0.40,
             colour = G.C.MONEY,
-            newline = true
         }
     },
 
@@ -673,9 +671,8 @@ jd_def["j_kh_helpwanted"] = {
             task_desc = "Cargo Climb"
             progress = "(" .. prog .. "/20)"
         elseif card.ability.current_task == "shopping" then
-            local spent = card.ability.money_spent or 0
             task_desc = "Poster Duty"
-            progress = "($" .. spent .. "/20)"
+            progress = "($" .. prog .. "/20)"
         end
 
         card.joker_display_values.task_desc = task_desc
@@ -692,7 +689,6 @@ jd_def["j_kh_munnypouch"] = {
             ref_value = "sell_cost",
             scale = 0.40,
             colour = G.C.MONEY,
-            newline = true
         }
     },
 
@@ -720,7 +716,6 @@ jd_def["j_kh_munny"] = {
             ref_value = "dollars",
             scale = 0.40,
             colour = G.C.MONEY,
-            newline = true
         }
     },
 

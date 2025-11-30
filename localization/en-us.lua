@@ -33,6 +33,17 @@ return {
 			pnr_kh_randompartner = {
 				name = '{E:kh_pulse}Random Partner',
 				text = {
+					"Balances {C:purple}#1#%{} of",
+					"{C:chips}Chips{} and {C:mult}Mult{}",
+					"when a hand is played",
+					"Click to pay {C:money}$#3#{} and",
+					"increase by {C:purple}+#2#%{}",
+				},
+			},
+
+			pnr_kh_nobody = {
+				name = '{E:kh_pulse}Nobody',
+				text = {
 					"First and Last",
 					"cards {C:attention}held in hand{}",
 					"count in scoring",
@@ -106,7 +117,7 @@ return {
 			j_kh_magnet = {
 				name = '{E:kh_pulse}Munny Magnet',
 				text = {
-					"Steel cards are moved",
+					"{C:attention}Steel{} cards are moved",
 					"to the top of",
 					"your {C:attention}full deck{}",
 					"and give {C:money}$#1#{}",
@@ -506,7 +517,6 @@ return {
 					{
 						'Chips increase by {X:chips,C:white}X1.5{}',
 						'when a {C:attention}Boss Blind{} is defeated.',
-						'{C:red,E:2,s:1.1}self destructs',
 						"{C:inactive,s:0.8}I'd rather we just skip the formalities",
 					},
 
@@ -679,7 +689,7 @@ return {
 			kh_axleffect = {
 				name = 'Original Effect',
 				text = {
-					"{x:enhanced,C:white}Doubles{} values of leftmost {C:attention}Joker{}",
+					"{x:enhanced,C:white}X2{} values of leftmost {C:attention}Joker{}",
 					"when {C:attention}Boss Blind{} is defeated",
 
 				},

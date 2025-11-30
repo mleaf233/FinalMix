@@ -34,6 +34,8 @@ SMODS.Consumable {
     pos = { x = 1, y = 1 },
     cost = 3,
     atlas = "KHDrive",
+    unlocked = true,
+    discovered = true,
     config = { extra = {} },
     loc_vars = function(self, info_queue, card)
         return { vars = {} }
@@ -53,6 +55,8 @@ SMODS.Consumable {
     pos = { x = 1, y = 0 },
     cost = 3,
     atlas = "KHDrive",
+    unlocked = true,
+    discovered = true,
     config = { extra = {} },
     loc_vars = function(self, info_queue, card)
         return { vars = {} }
@@ -72,6 +76,8 @@ SMODS.Consumable {
     pos = { x = 2, y = 1 },
     cost = 3,
     atlas = "KHDrive",
+    unlocked = true,
+    discovered = true,
     config = { extra = {} },
     loc_vars = function(self, info_queue, card)
         return { vars = {} }
@@ -91,6 +97,8 @@ SMODS.Consumable {
     pos = { x = 0, y = 0 },
     cost = 3,
     atlas = "KHDrive",
+    unlocked = true,
+    discovered = true,
     config = { extra = {} },
     loc_vars = function(self, info_queue, card)
         return { vars = {} }
@@ -110,6 +118,8 @@ SMODS.Consumable {
     pos = { x = 2, y = 0 },
     cost = 3,
     atlas = "KHDrive",
+    unlocked = true,
+    discovered = true,
     config = { extra = {} },
     loc_vars = function(self, info_queue, card)
         return { vars = {} }
@@ -129,6 +139,8 @@ SMODS.Consumable {
     pos = { x = 0, y = 1 },
     cost = 3,
     atlas = "KHDrive",
+    unlocked = true,
+    discovered = true,
     config = { extra = {} },
     loc_vars = function(self, info_queue, card)
         return { vars = {} }

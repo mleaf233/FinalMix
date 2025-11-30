@@ -2,7 +2,7 @@ SMODS.Joker {
     key = 'dummy',
     name = "Munny",
     generate_ui = function(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
-        if desc_nodes ~= full_UI_table.main then
+        if desc_nodes ~= full_UI_table.main and G.jokers then
             G.munny_area = CardArea(
                 G.ROOM.T.x + 0.2 * G.ROOM.T.w / 2, G.ROOM.T.h,
                 1.05 * G.CARD_W,

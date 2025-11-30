@@ -99,6 +99,14 @@ SMODS.Atlas({
     path = 'DriveCards.png'
 })
 
+SMODS.Atlas {
+    key = "KHBoosters",
+    path = "KHBoosters.png",
+    px = 71,
+    py = 95,
+}
+
+
 -- kingdom key cards? maybe wait for easy way to make custom playing cards for the ranks
 SMODS.Atlas({
     key = 'COMRanks',

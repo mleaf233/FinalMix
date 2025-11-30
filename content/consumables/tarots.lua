@@ -1,6 +1,8 @@
 SMODS.Tag {
     key = "kingdom",
     atlas = "modicon",
+    unlocked = true,
+    discovered = true,
     pos = { x = 0, y = 0 },
     config = { odds = 3 },
     apply = function(self, tag, context)
@@ -58,6 +60,7 @@ SMODS.Tarot {
     atlas = "KHConsumeables",
     pos = { x = 0, y = 0 },
     cost = 5,
+    unlocked = true,
     discovered = true,
 
     use = function(self, card, area, copier)

@@ -162,6 +162,7 @@ SMODS.Sticker({
     atlas = "KHStickers",
     pos = { x = 0, y = 0, },
     should_apply = function(self, card, center, area, bypass_roll)
-        return G.GAME.modifiers.enable_eternals_in_shop
+        return G.GAME.modifiers.enable_eternals_in_shop and
+            SMODS.Sticker.should_apply(self, card, center, area, bypass_roll)
     end,
 })
