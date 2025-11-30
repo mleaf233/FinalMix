@@ -1,6 +1,6 @@
 # ![icon](assets/1x/mod_icon.png) Final Mix - Kingdom Hearts Themed Balatro Mod!
 
-<img width="852" height="570" alt="Logo" src="https://github.com/user-attachments/assets/d72c0451-36b1-4fb6-a029-e98705687e35" />
+![Logo](https://github.com/user-attachments/assets/fbcd425a-e062-4b9f-8a86-d26d5bb45b97)
 
 # Features
 
@@ -27,7 +27,7 @@ and more to come... stay tuned!
 
 </details>
 
-## Crossmod Compat!
+## Crossmod!
 
 This Mod has JokerDisplay support! *woo hoo*
 
