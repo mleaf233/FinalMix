@@ -1,48 +1,42 @@
-# ![icon](assets/1x/mod_icon.png) Final Mix - Kingdom Hearts Themed Balatro Mod!
+# ![icon](assets/1x/mod_icon.png) Final Mix - Kingdom Hearts Themed Content Mod!
 
 ![Logo](https://github.com/user-attachments/assets/fbcd425a-e062-4b9f-8a86-d26d5bb45b97)
 
-# Features
+# Additions
 
-Currently adds the following content based on the hit videogame, Kingdom Hearts!
-- 30 Jokers<br>
-- 2 Challenges<br>
-- 3 Spectral Cards<br>
-- 1 Tarot Card<br>
-- 1 Sticker<br>
-- 2 Seals<br>
-- 2 Decks<br>
-- 2 Vouchers<br>
-- Kingdom Hearts x Friends of Jimbo Collab<br>
+Currently adds the following content to Balatro based on the hit videogame, Kingdom Hearts!
+
+- 4 suits of Kingdom Hearts x Friends of Jimbo Face cards!<br>
+
+<img width="468" height="272" alt="{97840C34-05E8-41E9-95BD-A1A6990B82A0}" src="https://github.com/user-attachments/assets/ad14b31e-43b8-4bc4-8a1b-e6572c8cbbdc" />
 
 and more to come... stay tuned!
 
-## Cool Content!
+## Crossmod Compat!
 
-<details>
-<summary>Mega64 Content *by me* </summary
-
-- Mod includes a Bryce The Nobody Joker + Face Card based off Mega64's video on Kingdom Hearts!
-- https://www.youtube.com/watch?v=4YVTBQCbezQ&t=1s
-
-</details>
-
-## Crossmod!
-
-This Mod has JokerDisplay support! *woo hoo*
+This Mod has JokerDisplay support! _woo hoo_
 
 - [JokerDisplay](https://github.com/nh6574/JokerDisplay)
 
-This Mod also has CardSleeves support! *yippee*
+This Mod also has CardSleeves support! _yippee_
 
 - Adds 2 new sleeves: Kingdom and Rechain Sleeves!
 - [CardSleeves](https://github.com/larswijn/CardSleeves)
 
-This Mod now has Partner API support! *yay*
+This Mod now has Partner API support! _yay_
 
 - Adds 5 new Partners to the Game!
 - [Partner-API](https://github.com/Icecanno/Partner-API)
 
+## Cool Content!
+
+<details>
+<summary>Mega64 inspired Content</summary>
+
+- Mod includes a Bryce The Nobody Joker + Face Card based off of Mega64's video on Kingdom Hearts!
+- https://www.youtube.com/watch?v=4YVTBQCbezQ&t=1s
+
+</details>
 
 ## Requirements
 
@@ -55,7 +49,7 @@ Get the latest stable version from the [Releases](https://github.com/cloudzXIII/
 
 ## Many Thanks
 
-Credits to the following Mods and their devs! I borrowed/referenced their code in the making this mod!
+Credits to the following Mods and their devs! I borrowed/referenced their code in the making of this mod!
 
 <details>
   <summary>Paperback — <a href="https://github.com/Balatro-Paperback/paperback">GitHub</a></summary>
@@ -74,11 +68,11 @@ Credits to the following Mods and their devs! I borrowed/referenced their code i
 
 <details>
   <summary>Cryptid — <a href="https://github.com/SpectralPack/Cryptid">GitHub</a></summary>
-  - For the lovely patches used to make all blinds boss blinds!
+  - For the lovely patches used to make all blinds boss blinds
 </details>
 
 <details>
-  <summary>JoyousSpring</summary>
+  <summary>JoyousSpring - <a href="https://github.com/nh6574/JoyousSpring">Github</a></summary>
   - For the code used to add Jokers to the Mod Page!
 </details>
 

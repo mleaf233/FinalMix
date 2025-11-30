@@ -15,7 +15,7 @@ local atlas_lc = SMODS.Atlas {
 SMODS.DeckSkin {
 	key = "khhearts",
 	suit = "Hearts",
-	loc_txt = "Kingom Hearts",
+	loc_txt = "Kingdom Hearts",
 	palettes = {
 		{
 			key = 'lc',
@@ -84,7 +84,7 @@ SMODS.DeckSkin {
 SMODS.DeckSkin {
 	key = "khclubs",
 	suit = "Clubs",
-	loc_txt = "Bryce",
+	loc_txt = "Mega64",
 	palettes = {
 		{
 			key = 'lc',
