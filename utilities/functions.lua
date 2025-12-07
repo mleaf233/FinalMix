@@ -171,3 +171,24 @@ G.FUNCS.kh_reroll = function(e)
         end
     }))
 end
+
+-- Talisman compatible number conversion
+function ToNumber(x)
+    if type(x) == 'number' then
+        return x
+    elseif type(x) == 'string' then
+        return tonumber(x) or 0
+    elseif type(x) == 'table' then
+        if type(x.to_number) == 'function' then
+            return x:to_number() or 0
+        elseif type(x.tonumber) == 'function' then
+            return x:tonumber() or 0
+        elseif x.array and type(x.array) == 'table' then
+            return x.array[1] or 0
+        else
+            return 0
+        end
+    else
+        return 0
+    end
+end
