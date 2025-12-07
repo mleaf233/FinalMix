@@ -49,6 +49,7 @@ Get the latest stable version from the [Releases](https://github.com/cloudzXIII/
 
 ## Many Thanks
 
+
 Credits to the following Mods and their devs! I borrowed/referenced their code in the making of this mod!
 
 <details>
@@ -85,6 +86,10 @@ Credits to the following Mods and their devs! I borrowed/referenced their code i
   <summary>Maximus — <a href="https://github.com/the-Astra/Maximus">GitHub</a></summary>
   - For the code used to display the logo on the titlescreen
 </details>
+
+**Translating:**
+- Simplified Chinese (zh_CN) localization - mleaf233
+
 
 **Misc Functions:**
 
