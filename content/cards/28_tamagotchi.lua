@@ -38,7 +38,13 @@ SMODS.Joker {
                     for _, consumable in pairs(G.consumeables.cards) do
                         consumable:start_dissolve(nil, _first_dissolve)
                         _first_dissolve = true
-                        card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.xmult_gain
+                        SMODS.scale_card(card, {
+                            ref_table = card.ability.extra,
+                            ref_value = "x_mult",
+                            scalar_value = "xmult_gain",
+                            operation = '+',
+                            no_message = true
+                        })
                     end
                     SMODS.calculate_effect({ message = localize('kh_destroyed'), colour = G.C.FILTER }, card)
                     card:juice_up(0.3, 0.5)

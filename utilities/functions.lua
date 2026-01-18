@@ -1,9 +1,5 @@
-XIII = {
-    funcs = {},
-}
-
 -- Find position of card
-function GetPos(card, area)
+XIII.get_pos = function(card, area)
     for i, v in ipairs(area) do
         if v == card then
             return i
@@ -13,7 +9,7 @@ function GetPos(card, area)
 end
 
 -- Use Blockbuster API to see if cards are compatible with value manipulation or not
-function CompatCheck(card, target)
+XIII.compat_check = function(card, target)
     if not target or target == card then
         return false
     end
@@ -28,17 +24,17 @@ function CompatCheck(card, target)
 end
 
 -- Function to get a Joker by its key from a list of Jokers. (Donald)
-function GetJokerByKey(jokers, key)
-    for _, joker in ipairs(jokers) do
-        if joker.config.center.key == key then
-            return joker
+XIII.get_joker_by_key = function(jokers, key)
+    for _, j in ipairs(jokers) do
+        if j.config.center.key == key then
+            return j
         end
     end
     return nil
 end
 
 -- Function to find stuff with a specific prefix, used for Awakening Tarot and Kingdom Tag
-function GetResourceWithPrefix(prefix)
+XIII.get_resource_with_prefix = function(prefix)
     local results = {}
     for k, v in pairs(G.P_CENTERS) do
         if k:sub(1, #prefix) == prefix then
@@ -49,7 +45,7 @@ function GetResourceWithPrefix(prefix)
 end
 
 -- Gets a random Poker Hand (Master Yen Sid)
-function GetPokerHand()
+XIII.get_poker_hand = function()
     local poker_hands = {}
     local total_weight = 0
     for _, handname in ipairs(G.handlist) do
@@ -73,7 +69,7 @@ function GetPokerHand()
 end
 
 -- Gets most played Poker Hand
-function MostPlayedHand()
+XIII.most_played_hand = function()
     local _handname, _played, _order = 'High Card', -1, 100
     for k, v in pairs(G.GAME.hands) do
         if v.played > _played or (v.played == _played and _order > v.order) then
@@ -85,7 +81,7 @@ function MostPlayedHand()
 end
 
 -- Function to balance a percentage of score
-function BalancePercent(card, percent)
+XIII.balance_percent = function(card, percent)
     local chip_mod = percent * hand_chips
     local mult_mod = percent * mult
     local average = (chip_mod + mult_mod) / 2
@@ -139,9 +135,54 @@ function BalancePercent(card, percent)
     return hand_chips, mult
 end
 
+-- function to send player to an area
+XIII.send_to_room = function(area)
+    -- Credits to All in Jest!
+    stop_use()
+
+    G.deck:shuffle('cashout' .. G.GAME.round_resets.ante)
+    G.deck:hard_set_T()
+    G.GAME.current_round.used_packs = {}
+
+    local rechain = (G.GAME.selected_back_key or {}).key == 'b_kh_rechain' or
+        G.GAME.selected_sleeve == 'sleeve_kh_rechain'
+    if not rechain or G.GAME.round_resets.blind.boss then
+        G.GAME.current_round.reroll_cost_increase = 0
+    end
+
+    G.GAME.current_round.free_rerolls = G.GAME.round_resets.free_rerolls
+    calculate_reroll_cost(true)
+
+    if G.blind_prompt_box then
+        G.blind_prompt_box:get_UIE_by_ID('prompt_dynatext1').config.object.pop_delay = 0
+        G.blind_prompt_box:get_UIE_by_ID('prompt_dynatext1').config.object:pop_out(5)
+        G.blind_prompt_box:get_UIE_by_ID('prompt_dynatext2').config.object.pop_delay = 0
+        G.blind_prompt_box:get_UIE_by_ID('prompt_dynatext2').config.object:pop_out(5)
+    end
+
+    delay(0.3)
+    G.E_MANAGER:add_event(Event({
+        trigger = "after",
+        func = function()
+            if G.blind_select then
+                G.blind_select:remove()
+                G.blind_prompt_box:remove()
+                G.blind_select = nil
+            end
+            G.GAME.current_round.jokers_purchased = 0
+            G.STATE = area
+            G.GAME.kh.moogle_shop = true
+            G.GAME.shop_free = nil
+            G.GAME.shop_d6ed = nil
+            G.STATE_COMPLETE = false
+            G.GAME.current_round.used_packs = {}
+            return true
+        end,
+    }))
+end
+
 -- Reroll Button for "Help Wanted" Joker
 
--- Check if you have enough money to reroll
 G.FUNCS.kh_can_reroll = function(e)
     local reroll_cost = 4
     local can_afford = to_big(G.GAME.dollars) >= to_big(reroll_cost)
@@ -154,7 +195,6 @@ G.FUNCS.kh_can_reroll = function(e)
     end
 end
 
--- What the reroll button actually does
 G.FUNCS.kh_reroll = function(e)
     local ref = e.config and e.config.ref_table
     local card = ref and ref[1]
@@ -172,23 +212,51 @@ G.FUNCS.kh_reroll = function(e)
     }))
 end
 
--- Talisman compatible number conversion
-function ToNumber(x)
-    if type(x) == 'number' then
-        return x
-    elseif type(x) == 'string' then
-        return tonumber(x) or 0
-    elseif type(x) == 'table' then
-        if type(x.to_number) == 'function' then
-            return x:to_number() or 0
-        elseif type(x.tonumber) == 'function' then
-            return x:tonumber() or 0
-        elseif x.array and type(x.array) == 'table' then
-            return x.array[1] or 0
-        else
-            return 0
-        end
-    else
-        return 0
+
+XIII.create_random_tag = function(card)
+    local tag_pool = get_current_pool('Tag')
+    local selected_tag = pseudorandom_element(tag_pool, 'kh_seed')
+    local it = 1
+    while selected_tag == 'UNAVAILABLE' do
+        it = it + 1
+        selected_tag = pseudorandom_element(tag_pool, 'kh_kingdom_key_seed' .. it)
     end
+
+    SMODS.calculate_effect({ message = "+1 Tag!" }, card)
+    G.E_MANAGER:add_event(Event({
+        func = (function()
+            add_tag(Tag(selected_tag, false, 'Small'))
+            return true
+        end)
+    }))
 end
+
+
+SMODS.Keybind {
+    key_pressed = 'a',
+    held_keys = { "lshift" },
+    event = 'pressed',
+    action = function(self)
+        if G.hand then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    local _first_dissolve = nil
+                    local new_cards = {}
+
+                    G.playing_card = (G.playing_card and G.playing_card + 1) or 1
+                    local _card = XIII.create_random_card("kingdom")
+                    _card:add_to_deck()
+                    G.deck.config.card_limit = G.deck.config.card_limit + 1
+                    table.insert(G.playing_cards, _card)
+                    G.hand:emplace(_card)
+                    _card:start_materialize(nil, _first_dissolve)
+                    _first_dissolve = true
+                    new_cards[#new_cards + 1] = _card
+
+                    SMODS.calculate_context({ playing_card_added = true, cards = new_cards })
+                    return true
+                end
+            }))
+        end
+    end
+}

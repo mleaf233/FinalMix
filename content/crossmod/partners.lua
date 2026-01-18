@@ -5,7 +5,6 @@ pnr_def {
     unlocked = true,
     discovered = true,
     pos = { x = 0, y = 0 },
-    loc_txt = {},
     atlas = "KHPartner",
     config = { extra = { Xmult = 0.1 } },
     link_config = { j_kh_sora = 1 },
@@ -36,16 +35,15 @@ pnr_def { -- art is currently placeholder, will change eventually
     unlocked = true,
     discovered = true,
     pos = { x = 1, y = 0 },
-    loc_txt = {},
     atlas = "KHPartner",
-    config = { extra = {} },
+    config = { extra = { copied_joker_key = nil } },
     link_config = { j_kh_donald = 1 },
     loc_vars = function(self, info_queue, card)
         local copied_joker_key = card.ability.extra.copied_joker_key
         local copied_name = "None"
 
         if G.jokers then
-            local copied_joker = GetJokerByKey(G.jokers.cards, copied_joker_key)
+            local copied_joker = XIII.get_joker_by_key(G.jokers.cards, copied_joker_key)
             if copied_joker then
                 copied_name = copied_joker.config.center.name
             end
@@ -79,13 +77,11 @@ pnr_def { -- art is currently placeholder, will change eventually
         end
 
         if card.ability.extra.copied_joker_key and not card.debuff and G.jokers then
-            local copied_joker = GetJokerByKey(G.jokers.cards, card.ability.extra.copied_joker_key)
+            local copied_joker = XIII.get_joker_by_key(G.jokers.cards, card.ability.extra.copied_joker_key)
 
-            if copied_joker then
-                local success, effect = pcall(SMODS.blueprint_effect, card, copied_joker, context)
-                if success and effect then
-                    return effect
-                end
+            local copied_joker_ret = SMODS.blueprint_effect(card, copied_joker, context)
+            if copied_joker_ret then
+                return copied_joker_ret
             end
         end
     end,
@@ -97,7 +93,6 @@ pnr_def {
     unlocked = true,
     discovered = true,
     pos = { x = 2, y = 0 },
-    loc_txt = {},
     atlas = "KHPartner",
     config = {
         extra = {
@@ -177,7 +172,6 @@ pnr_def {
     unlocked = true,
     discovered = true,
     pos = { x = 3, y = 0 },
-    loc_txt = {},
     atlas = "KHPartner",
     config = {
         extra = {
@@ -202,7 +196,7 @@ pnr_def {
 
     calculate = function(self, card, context)
         if context.final_scoring_step and card.ability.extra.percent > 0 then
-            BalancePercent(card, (card.ability.extra.percent * 0.01))
+            XIII.balance_percent(card, (card.ability.extra.percent * 0.01))
         end
         if context.partner_click and ((to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost)) then
             local link_level = self:get_link_level()
@@ -220,7 +214,6 @@ pnr_def {
     unlocked = true,
     discovered = true,
     pos = { x = 4, y = 0 },
-    loc_txt = {},
     atlas = "KHPartner",
     config = {
         extra = {}

@@ -2,16 +2,13 @@ if Blockbuster then
     SMODS.Joker {
         name = 'Axel',
         key = 'axel',
-        set_badges = function(self, card, badges)
-            badges[#badges + 1] = create_badge("Organisation XIII", G.C.BLACK, G.C.WHITE, 1.0)
-        end,
         loc_vars = function(self, info_queue, card)
             info_queue[#info_queue + 1] = { key = "kh_perishable", set = "Other" }
             info_queue[#info_queue + 1] = { key = "kh_unstackable", set = "Other" }
 
             if card.area == G.jokers then
                 local target = G.jokers.cards[1]
-                local compatible = CompatCheck(card, target)
+                local compatible = XIII.compat_check(card, target)
                 local main_end = {
                     {
                         n = G.UIT.C,
@@ -71,7 +68,7 @@ if Blockbuster then
                     return
                 end
 
-                local compatible = CompatCheck(card, target) and not target.ability.perishable
+                local compatible = XIII.compat_check(card, target) and not target.ability.perishable
 
                 if compatible then
                     SMODS.Stickers["perishable"]:apply(target, true)
@@ -90,9 +87,6 @@ else
     SMODS.Joker {
         name = 'Axel',
         key = 'axel_alt',
-        set_badges = function(self, card, badges)
-            badges[#badges + 1] = create_badge("Organisation XIII", G.C.BLACK, G.C.WHITE, 1.0)
-        end,
         loc_vars = function(self, info_queue, card)
             info_queue[#info_queue + 1] = { key = "kh_no_blockbuster", set = "Other" }
             info_queue[#info_queue + 1] = { key = "kh_axleffect", set = "Other" }

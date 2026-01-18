@@ -35,7 +35,7 @@ SMODS.Joker {
 	},
 
 	set_ability = function(self, card, initial, delay_sprites)
-		local most_played = MostPlayedHand()
+		local most_played = XIII.most_played_hand()
 		card.ability.extra.most_played = most_played
 		card.ability.extra.old_most_played = card.ability.extra.most_played
 	end,
@@ -43,7 +43,7 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		-- Update most played hand after every hand played/ at end of round
 		if context.final_scoring_step or context.end_of_round and not context.individual then
-			local most_played = MostPlayedHand()
+			local most_played = XIII.most_played_hand()
 			card.ability.extra.most_played = most_played
 			card.ability.extra.old_most_played = card.ability.extra.most_played
 		end

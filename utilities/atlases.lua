@@ -31,6 +31,9 @@ SMODS.Atlas {
     path = "lethimcook.png",
     px = 71,
     py = 95,
+    frames = 8,
+    fps = 1,
+    atlas_table = 'ANIMATION_ATLAS'
 }
 
 SMODS.Atlas({
@@ -84,33 +87,9 @@ SMODS.Atlas({
     path = 'KHStickers.png'
 })
 
-
 SMODS.Atlas {
     key = "KHVouchers",
     path = "voucher.png",
     px = 71,
     py = 95
 }
-
-SMODS.Atlas({
-    key = 'KHDrive',
-    px = 71,
-    py = 95,
-    path = 'DriveCards.png'
-})
-
-SMODS.Atlas {
-    key = "KHBoosters",
-    path = "KHBoosters.png",
-    px = 71,
-    py = 95,
-}
-
-
--- kingdom key cards? maybe wait for easy way to make custom playing cards for the ranks
-SMODS.Atlas({
-    key = 'COMRanks',
-    px = 71,
-    py = 95,
-    path = 'COMRanks.png'
-})

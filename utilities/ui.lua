@@ -24,7 +24,7 @@ SMODS.current_mod.ui_config = {
     collection_option_cycle_colour = KH.C.COLLECTION_OPTION,
 }
 
--- Credits to N' in JoyousSpring! Check them out! Adds cards to mod page
+-- Adds cards to mod page, credits to N' who made JoyousSpring, check them out!
 KH.custom_ui = function(modNodes)
     modNodes[1].nodes[1].config.colour = G.C.BLUE
 
@@ -53,122 +53,48 @@ end
 
 -- Config Tab
 KH.config_tab = function()
-    -- Title box
-    local title_box = {
-        n = G.UIT.R,
-        config = { colour = G.C.BLACK, padding = 0.1, align = "cm", minw = 4, minh = 1, r = 0.1 },
-        nodes = {
-            { n = G.UIT.T, config = { text = "KINGDOM HEARTS CONFIG", colour = G.C.UI.TEXT_DARK, scale = 1, padding = 0.1, align = "cm" } }
-        }
-    }
-
-    -- Left toggles
-    local left_box = {
-        n = G.UIT.C,
-        config = { r = 0.1, minw = 3, align = "tm", padding = 0.2, colour = G.C.BLACK },
-        nodes = {
-            create_toggle({
-                id = "enable_jokers",
-                label = localize("k_finalmix_config_jokers"),
-                info = { localize('k_finalmix_config_restart') },
-                ref_table = KH.config,
-                ref_value = "enable_jokers",
-                callback = function() KH:save_config() end
-            }),
-            create_toggle({
-                id = "enable_tarots",
-                label = localize("k_finalmix_config_tarots"),
-                info = { localize('k_finalmix_config_restart') },
-                ref_table = KH.config,
-                ref_value = "enable_tarots",
-                callback = function() KH:save_config() end
-            }),
-            create_toggle({
-                id = "enable_spectrals",
-                label = localize("k_finalmix_config_spectrals"),
-                info = { localize('k_finalmix_config_restart') },
-                ref_table = KH.config,
-                ref_value = "enable_spectrals",
-                callback = function() KH:save_config() end
-            }),
-            create_toggle({
-                id = "enable_vouchers",
-                label = localize("k_finalmix_config_vouchers"),
-                info = { localize('k_finalmix_config_restart') },
-                ref_table = KH.config,
-                ref_value = "enable_vouchers",
-                callback = function() KH:save_config() end
-            }),
-        }
-    }
-
-    -- Right toggles
-    local right_box = {
-        n = G.UIT.C,
-        config = { r = 0.1, minw = 3, align = "tm", padding = 0.2, colour = G.C.BLACK },
-        nodes = {
-            create_toggle({
-                id = "enable_drive",
-                ref_table = KH.config,
-                ref_value = "enable_drive",
-                label = localize("k_finalmix_config_drive"),
-                callback = function() KH:save_config() end
-            }),
-            create_toggle({
-                id = "enable_seal",
-                label = localize("k_finalmix_config_seal"),
-                info = { localize('k_finalmix_config_restart') },
-                ref_table = KH.config,
-                ref_value = "enable_seal",
-                callback = function() KH:save_config() end
-            }),
-            create_toggle({
-                id = "enable_blind",
-                label = localize("k_finalmix_config_blind"),
-                info = { localize('k_finalmix_config_restart') },
-                ref_table = KH.config,
-                ref_value = "enable_blind",
-                callback = function() KH:save_config() end
-            }),
-            create_toggle({
-                id = "menu_toggle",
-                ref_table = KH.config,
-                ref_value = "menu_toggle",
-                label = localize("k_finalmix_config_menu_toggle"),
-                callback = menu_refresh
-            }),
-        }
-    }
-
-    local toggles_row = {
-        n = G.UIT.R,
-        config = { r = 0.1, minw = 7, align = "cm", padding = 0.2, colour = G.C.BLACK },
-        nodes = { left_box, right_box }
-    }
-
     return {
         n = G.UIT.ROOT,
         config = { r = 0.1, minw = 7, align = "tm", padding = 0.1, colour = G.C.BLACK },
         nodes = {
             {
                 n = G.UIT.R,
-                config = { r = 0.1, minw = 7, align = "cm", padding = 0.1, colour = G.C.BLACK },
+                config = { colour = G.C.BLACK, padding = 0.1, align = "cm", minw = 4, minh = 1, r = 0.1 },
                 nodes = {
-                    {
-                        n = G.UIT.C,
-                        config = { r = 0.1, minw = 7, minh = 5, align = "tm", padding = 0.2, colour = G.C.BLACK },
-                        nodes = {
-                            title_box,
-                            toggles_row,
-                        }
-                    }
+                    { n = G.UIT.T, config = { text = "FINAL MIX ", colour = G.C.UI_CHIPS, scale = 1, padding = 0.1, align = "cm" } },
+                }
+            },
+            {
+                n = G.UIT.R,
+                config = { colour = G.C.BLACK, padding = 0.1, align = "cm", minw = 4, minh = 1, r = 0.1 },
+                nodes = {
+                    { n = G.UIT.T, config = { text = "CONFIG", colour = G.C.DARK_EDITION, scale = 1, padding = 0.1, align = "cm" } }
+                }
+            },
+            {
+                n = G.UIT.R,
+                config = { r = 0.1, minw = 3, align = "tm", padding = 0.2, colour = G.C.BLACK },
+                nodes = {
+                    create_toggle({
+                        id = "menu_toggle",
+                        ref_table = KH.config,
+                        ref_value = "menu_toggle",
+                        label = localize("k_finalmix_config_menu_toggle"),
+                    }),
+                }
+            },
+            {
+                n = G.UIT.R,
+                config = { padding = 0.1, align = "cm" },
+                nodes = {
+                    { n = G.UIT.T, config = { text = "(requires restart to apply changes)", colour = G.C.UI.TEXT_INACTIVE, scale = 0.4, padding = 0.1, align = "cm" } }
                 }
             }
         }
     }
 end
 -- Crossmod Tab
-G.UIDEF.kh_crossmod_tab = function()
+KH.crossmod_tab = function()
     return {
         n = G.UIT.ROOT,
         config = {
@@ -181,23 +107,18 @@ G.UIDEF.kh_crossmod_tab = function()
         nodes = {
             {
                 n = G.UIT.R,
+                config = { colour = G.C.BLACK, padding = 0.1, align = "cm", minw = 4, minh = 1, r = 0.1 },
+                nodes = {
+                    { n = G.UIT.T, config = { text = "FINAL MIX", colour = G.C.UI_CHIPS, scale = 1, padding = 0.1, align = "cm" } }
+                }
+            },
+            {
+                n = G.UIT.C,
                 config = {
                     align = "cm",
                     padding = 0.2
                 },
                 nodes = {
-                    UIBox_button({
-                        minw = 3.85,
-                        button = "kh_github",
-                        colour = G.C.GOLD,
-                        label = { "Final Mix Github" }
-                    }),
-                    UIBox_button({
-                        minw = 3.85,
-                        colour = G.C.ORANGE,
-                        button = "kh_blockbuster_api",
-                        label = { "Blockbuster API (Value Manipulation)" }
-                    }),
                     UIBox_button({
                         minw = 3.85,
                         colour = G.C.GREEN,
@@ -210,14 +131,36 @@ G.UIDEF.kh_crossmod_tab = function()
                         button = "kh_card_sleeves",
                         label = { "CardSleeves" }
                     }),
+                }
+            },
+            {
+                n = G.UIT.R,
+                config = { colour = G.C.BLACK, padding = 0.1, align = "cm", minw = 4, minh = 1, r = 0.1 },
+                nodes = {
+                    { n = G.UIT.T, config = { text = "CROSSMOD", colour = G.C.DARK_EDITION, scale = 1, padding = 0.1, align = "cm" } }
+                }
+            },
+            {
+                n = G.UIT.R,
+                config = {
+                    align = "cm",
+                    padding = 0.2
+                },
+                nodes = {
                     UIBox_button({
                         minw = 3.85,
                         colour = G.C.PURPLE,
                         button = "kh_partner_api",
                         label = { "Partner API" }
                     }),
+                    UIBox_button({
+                        minw = 3.85,
+                        colour = G.C.ORANGE,
+                        button = "kh_blockbuster_api",
+                        label = { "Blockbuster API (Value Manipulation)" }
+                    }),
                 }
-            }
+            },
         }
     }
 end
@@ -225,17 +168,8 @@ end
 KH.extra_tabs = function()
     return {
         label = "Crossmod",
-        tab_definition_function = G.UIDEF.kh_crossmod_tab,
+        tab_definition_function = KH.crossmod_tab,
     };
-end
-
-
-G.FUNCS.kh_github = function(e)
-    love.system.openURL("https://github.com/cloudzXIII/KHJokers")
-end
-
-G.FUNCS.kh_blockbuster_api = function(e)
-    love.system.openURL("https://github.com/icyethics/Blockbuster-ValueManipulation")
 end
 
 G.FUNCS.kh_joker_display = function(e)
@@ -248,4 +182,8 @@ end
 
 G.FUNCS.kh_partner_api = function(e)
     love.system.openURL("https://github.com/Icecanno/Partner-API")
+end
+
+G.FUNCS.kh_blockbuster_api = function(e)
+    love.system.openURL("https://github.com/icyethics/Blockbuster-ValueManipulation")
 end

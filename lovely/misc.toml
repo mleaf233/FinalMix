@@ -1,5 +1,5 @@
 [manifest]
-version = "1.1.3"
+version = "1.1.4"
 dump_lua = true
 priority = 0
 
@@ -8,7 +8,7 @@ priority = 0
 [patches.pattern]
 target = 'game.lua'
 pattern = '''unused_discards = 0,'''
-position = 'after'
+position = "after"
 payload = '''
 kh = {
     -- Moogle Vouchers
@@ -18,28 +18,18 @@ kh = {
     -- Luxord Challenge
     luxord_sold = false,
     luxord_destroyed = false,
-
-    -- Drive Cards
-    valorform = 0,
-    limitform = 0,
-    masterform = 1,
-    finalform = 1,
-    antiform = false,
-    wisdomform = false,
-    
 },
 '''
-match_indent = true 
+match_indent = true
 
 # Credits to Paperback for the patch!
+# If the selected deck is the Kingdom deck and this key is Final Mix Joker, add copies of it to the pool, so that it is more common to get
 [[patches]]
 [patches.pattern]
 target = "functions/common_events.lua"
 pattern = "if add and not G.GAME.banned_keys[v.key] then "
 position = "after"
 payload = '''
-    -- If the selected deck is the Kingdom deck and this key is Kingdom Hearts Joker, add copies of it
-    -- to the pool, so that it is more common to get
     local kingdom = 
         (G.GAME.selected_back_key or {}).key == 'b_kh_kingdom'
         or G.GAME.selected_sleeve == 'sleeve_kh_kingdom'
@@ -58,9 +48,8 @@ match_indent = true
 [patches.pattern]
 target = 'card.lua'
 pattern = "self.facing='back'"
-position = 'after'
+position = "after"
 payload = '''
-
 if self.config.center.key == 'j_kh_kairi' then
     self:flip()
     self:calculate_joker({flip = true})
@@ -85,12 +74,31 @@ match_indent = true
 [patches.pattern]
 target = 'functions/state_events.lua'
 pattern = "G.GAME.current_round.reroll_cost_increase = 0"
-position = 'at'
+position = "before"
 payload = '''
 local rechain = (G.GAME.selected_back_key or {}).key == 'b_kh_rechain' or G.GAME.selected_sleeve == 'sleeve_kh_rechain'
-        
 if not rechain or G.GAME.round_resets.blind.boss then
-    G.GAME.current_round.reroll_cost_increase = 0
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = "G.GAME.current_round.reroll_cost_increase = 0"
+position = "after"
+payload = '''end'''
+match_indent = true
+
+
+# Send To Shop
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''if self.STATE == self.STATES.SELECTING_HAND then'''
+position = "before"
+payload = '''
+if G.GAME.kh.moogle_shop then
+	self.STATE = self.STATES.SHOP
 end
 '''
 match_indent = true

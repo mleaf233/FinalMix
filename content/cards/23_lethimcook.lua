@@ -2,10 +2,9 @@ if Blockbuster then
 	SMODS.Joker {
 		name = 'Let Him Cook',
 		key = 'lethimcook',
-		AddRunningAnimation({ "j_kh_lethimcook", 0.65, 8, 0, "loop", 0, 0, card }), -- check utilities/animateObject.lua, credits to B'!
 		loc_vars = function(self, info_queue, card)
 			if card.area == G.jokers then
-				local pos = GetPos(card, G.jokers.cards)
+				local pos = XIII.get_pos(card, G.jokers.cards)
 				if not pos then return { vars = {} } end
 
 				local adjacent = { G.jokers.cards[pos - 1], G.jokers.cards[pos + 1] }
@@ -13,7 +12,7 @@ if Blockbuster then
 
 				for i = 1, 2 do
 					local adj = adjacent[i]
-					local compatible = CompatCheck(card, adj)
+					local compatible = XIII.compat_check(card, adj)
 					table.insert(main_end_nodes, {
 						n = G.UIT.C,
 						config = {
@@ -89,13 +88,13 @@ if Blockbuster then
 		calculate = function(self, card, context)
 			if context.post_trigger and context.cardarea == G.jokers then
 				local triggered_joker = context.other_card
-				local pos = GetPos(card, G.jokers.cards)
+				local pos = XIII.get_pos(card, G.jokers.cards)
 				local left = G.jokers.cards[pos - 1]
 				local right = G.jokers.cards[pos + 1]
 
 
 				for _, adj in pairs({ left, right }) do
-					if adj == triggered_joker and CompatCheck(card, adj) then
+					if adj == triggered_joker and XIII.compat_check(card, adj) then
 						Blockbuster.manipulate_value(adj, "lethimcook", card.ability.extra.multiplier, nil,
 							true)
 						SMODS.calculate_effect({ message = localize('k_upgrade_ex'), colour = G.C.FILTER },
@@ -105,7 +104,7 @@ if Blockbuster then
 			end
 
 			if context.selling_self then
-				local pos = GetPos(card, G.jokers.cards)
+				local pos = XIII.get_pos(card, G.jokers.cards)
 				local left = G.jokers.cards[pos - 1]
 				local right = G.jokers.cards[pos + 1]
 
@@ -135,12 +134,12 @@ if Blockbuster then
 			end
 		end,
 		calc_dollar_bonus = function(self, card)
-			local pos = GetPos(card, G.jokers.cards)
+			local pos = XIII.get_pos(card, G.jokers.cards)
 			local left = G.jokers.cards[pos - 1]
 			local right = G.jokers.cards[pos + 1]
 
 			for _, adj in pairs({ left, right }) do
-				if adj and CompatCheck(card, adj) then
+				if adj and XIII.compat_check(card, adj) then
 					local money = Card.calculate_dollar_bonus(adj)
 					if money and money > 0 then
 						Blockbuster.manipulate_value(adj, "lethimcook", card.ability.extra.multiplier, nil, true)
@@ -151,11 +150,10 @@ if Blockbuster then
 			end
 		end
 	}
-else
+else -- if blockbuster is not available
 	SMODS.Joker {
 		name = 'Let Him Cook',
-		key = 'lethimcook_alt',                                                   -- if blockbuster is not available
-		AddRunningAnimation({ "j_kh_lethimcook_alt", 0.65, 8, 0, "loop", 0, 0, card }), -- check utilities/animateObject.lua, credits to B'!
+		key = 'lethimcook_alt',
 		loc_vars = function(self, info_queue, card)
 			info_queue[#info_queue + 1] = { key = "kh_lhceffect", set = "Other" }
 			info_queue[#info_queue + 1] = { key = "kh_no_blockbuster", set = "Other" }
@@ -186,8 +184,12 @@ else
 
 		calculate = function(self, card, context)
 			if context.post_trigger and context.cardarea == G.jokers then
-				card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.xmult_gain
-				SMODS.calculate_effect({ message = localize('k_upgrade_ex'), colour = G.C.FILTER }, card)
+				SMODS.scale_card(card, {
+					ref_table = card.ability.extra,
+					ref_value = "x_mult",
+					scalar_value = "xmult_gain",
+					operation = '+',
+				})
 			end
 			if context.joker_main and card.ability.extra.x_mult > 1 then
 				return {

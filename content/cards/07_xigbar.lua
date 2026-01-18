@@ -1,9 +1,6 @@
 SMODS.Joker {
     name = 'Half Face',
     key = 'xigbar',
-    set_badges = function(self, card, badges)
-        badges[#badges + 1] = create_badge("Organisation XIII", G.C.BLACK, G.C.WHITE, 1.0)
-    end,
     loc_vars = function(self, info_queue, card)
         return {
             vars = {
@@ -38,14 +35,18 @@ SMODS.Joker {
 
             for k, v in ipairs(context.full_hand) do
                 if not v.scoring and v:is_face() then
-                    card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.Xmult_gain
+                    SMODS.scale_card(card, {
+                        ref_table = card.ability.extra,
+                        ref_value = "x_mult",
+                        scalar_value = "Xmult_gain",
+                        operation = '+',
+                    })
                     G.E_MANAGER:add_event(Event({
                         func = function()
                             v:juice_up()
                             return true
                         end,
                     }))
-                    SMODS.calculate_effect({ message = localize('k_upgrade_ex'), colour = G.C.PURPLE }, card)
                 end
             end
 

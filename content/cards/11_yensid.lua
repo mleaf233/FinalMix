@@ -1,9 +1,6 @@
 SMODS.Joker {
 	name = 'Master Yen Sid',
 	key = 'disney',
-	set_badges = function(self, card, badges)
-		badges[#badges + 1] = create_badge("Disney", G.C.BLUE, G.C.WHITE, 1.2)
-	end,
 	loc_vars = function(self, info_queue, card)
 		local numerator, denominator = SMODS.get_probability_vars(card, card.ability.extra.base, card.ability.extra.odds,
 			'yensid1')
@@ -35,7 +32,7 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		if context.using_consumeable and context.consumeable and context.consumeable.ability.set == 'Tarot' and not context.blueprint then
 			if SMODS.pseudorandom_probability(card, 'yensid', card.ability.extra.base, card.ability.extra.odds, 'yensid1') then
-				local hand = GetPokerHand()
+				local hand = XIII.get_poker_hand()
 				card_eval_status_text(card, "extra", nil, nil, nil, {
 					message = localize("k_level_up_ex"),
 					colour = G.C.GREEN,

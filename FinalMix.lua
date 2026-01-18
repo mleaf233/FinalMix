@@ -1,4 +1,5 @@
 KH = SMODS.current_mod
+XIII = XIII or {}
 
 SMODS.Gradient {
   key = "badge",
@@ -19,6 +20,10 @@ KH.description_loc_vars = function()
   return { background_colour = G.C.CLEAR, text_colour = G.C.WHITE, scale = 1.2, shadow = true }
 end
 
+KH.save_config = function(self)
+  SMODS.save_mod_config(self)
+end
+
 SMODS.DynaTextEffect {
   key = "pulse",
   func = function(dynatext, index, letter)
@@ -30,9 +35,11 @@ SMODS.DynaTextEffect {
 
 -- tailsman thingy
 to_big = to_big or function(x) return x end
+to_number = to_number or function(x) return x end
 
 SMODS.current_mod.optional_features = {
   post_trigger = true,
+  retrigger_joker = true
 }
 
 -- Utility Functions
@@ -46,40 +53,25 @@ if Blockbuster then
   SMODS.load_file("content/crossmod/value_manipulation.lua")()
 end
 
---#region mod config options
-KH.save_config = function(self)
-  SMODS.save_mod_config(self)
+-- Jokers
+local subdir = "content/cards"
+local cards = NFS.getDirectoryItems(SMODS.current_mod.path .. subdir)
+for _, filename in pairs(cards) do
+  assert(SMODS.load_file(subdir .. "/" .. filename))()
 end
 
-if KH.config.enable_jokers then
-  local subdir = "content/cards"
-  local cards = NFS.getDirectoryItems(SMODS.current_mod.path .. subdir)
-  for _, filename in pairs(cards) do
-    assert(SMODS.load_file(subdir .. "/" .. filename))()
-  end
-  SMODS.load_file("content/misc/challenges.lua")() -- Only loads Challenges if Jokers are enabled
+-- Misc
+local cards = NFS.getDirectoryItems(SMODS.current_mod.path .. "content/misc")
+for _, filename in pairs(cards) do
+  assert(SMODS.load_file("content/misc/" .. filename))()
 end
 
-if KH.config.enable_tarots then
-  SMODS.load_file("content/consumables/tarots.lua")()
-end
+-- Consumables
+SMODS.load_file("content/consumables/tarots.lua")()
+SMODS.load_file("content/consumables/spectrals.lua")()
 
-if KH.config.enable_spectrals then
-  SMODS.load_file("content/consumables/spectrals.lua")()
-end
-
-if KH.config.enable_seal then
-  SMODS.load_file("content/misc/seal.lua")()
-end
-
-if KH.config.enable_blind then
-  SMODS.load_file("content/misc/blinds.lua")()
-end
-
-if KH.config.enable_vouchers then
-  SMODS.load_file("content/misc/vouchers.lua")()
-end
---#endregion
+-- Friends of Jimbo
+SMODS.load_file("content/collabs/kingdomheartsxbalatro.lua")()
 
 -- Joker Display Support!
 if JokerDisplay then
@@ -96,12 +88,9 @@ if CardSleeves then
   SMODS.load_file("content/crossmod/cardsleeves.lua")()
 end
 
-
-SMODS.load_file("content/collabs/kingdomheartsxbalatro.lua")()
-SMODS.load_file("content/misc/jimboquips.lua")()
-SMODS.load_file("content/misc/decks.lua")()
-
-if KH.config.enable_drive then
-  SMODS.load_file("content/consumables/drive_cards.lua")()
-  SMODS.load_file("content/misc/boosters.lua")()
+--[[ WIP
+if BLINDSIDE then
+  SMODS.load_file("content/crossmod/blindside_blinds.lua")()
+  SMODS.load_file("content/crossmod/blindside_jokers.lua")()
 end
+--]]

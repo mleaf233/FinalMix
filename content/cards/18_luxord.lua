@@ -1,9 +1,6 @@
 SMODS.Joker {
     name = 'Luxord',
     key = 'luxord',
-    set_badges = function(self, card, badges)
-        badges[#badges + 1] = create_badge("Organisation XIII", G.C.BLACK, G.C.WHITE, 1.0)
-    end,
     loc_vars = function(self, info_queue, card)
         local vars = {
             card.ability.extra.chips,      --1
@@ -69,8 +66,8 @@ SMODS.Joker {
             end
         end
 
-        if card.ability.extra.chips <= 0 and not G.GAME.luxord_destroyed then
-            G.GAME.luxord_destroyed = true
+        if card.ability.extra.chips <= 0 and not G.GAME.kh.luxord_destroyed then
+            G.GAME.kh.luxord_destroyed = true
             SMODS.destroy_cards(card, nil, nil, true)
             SMODS.calculate_effect({ message = "Time's Up!", colour = G.C.FILTER }, card)
         end
@@ -78,7 +75,7 @@ SMODS.Joker {
 
     calculate = function(self, card, context)
         if context.selling_self then
-            G.GAME.luxord_sold = true -- for the challenge, no idea if this is the best way of doing it but hey, it works!
+            G.GAME.kh.luxord_sold = true -- for the challenge, no idea if this is the best way of doing it but hey, it works!
         end
 
         if context.setting_blind and not card.getting_sliced and not context.blueprint then

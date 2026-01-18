@@ -1,9 +1,10 @@
 -- Main Menu Logo
-local oldfunc = Game.main_menu
-Game.main_menu = function(change_context)
-    local ret = oldfunc(change_context)
+if KH.config.menu_toggle then
+    local oldfunc = Game.main_menu
+    Game.main_menu = function(change_context)
+        local ret = oldfunc(change_context)
 
-    if KH.config.menu_toggle then
+        -- logo
         local SC_scale = 1.1 * (G.debug_splash_size_toggle and 0.8 or 1)
         G.SPLASH_KH_LOGO = Sprite(0, 0,
             6 * SC_scale,
@@ -56,10 +57,9 @@ Game.main_menu = function(change_context)
                 return true
             end)
         }))
+
+        return ret
     end
-
-
-    return ret
 end
 
 -- Extra Buttons on Jokers (Check functions.lua for what the button actually does)
@@ -245,4 +245,47 @@ end
 function SMODS.current_mod.reset_game_globals(run_start)
     reset_kh_bryce_card()
     reset_keyblade_rank()
+end
+
+-- Credits to Bluelatro for the function!
+-- After playing a hand, cards marked with `card.finalmix_return_to_hand` are returned to hand instead
+G.FUNCS.draw_from_play_to_discard = function(e)
+    local play_count = #G.play.cards
+    local i = 1
+    for _, card in ipairs(G.play.cards) do
+        if (not card.shattered) and not card.destroyed then
+            if card.finalmix_return_to_hand then
+                card.finalmix_return_to_hand = nil
+                draw_card(G.play, G.hand, i * 100 / play_count, "up", true, card)
+            else
+                draw_card(G.play, G.discard, i * 100 / play_count, "down", false, card)
+            end
+            i = i + 1
+        end
+    end
+end
+
+-- used for XIII.send_to_room
+
+local toggle_shop_ref = G.FUNCS.toggle_shop
+G.FUNCS.toggle_shop = function(e)
+    if G.GAME.kh.moogle_shop then
+        G.E_MANAGER:add_event(Event({
+            trigger = "after",
+            delay = 0.5,
+            func = function()
+                G.GAME.kh.moogle_shop = false
+                return true
+            end,
+        }))
+    end
+    return toggle_shop_ref(e)
+end
+
+local update_shop_ref = Game.update_shop
+function Game:update_shop(dt)
+    if G.GAME.kh.moogle_shop and G.STATE_COMPLETE and G.shop then
+        G.shop.alignment.offset.y = -5.3
+    end
+    return update_shop_ref(self, dt)
 end

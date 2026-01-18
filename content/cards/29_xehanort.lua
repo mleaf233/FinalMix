@@ -1,9 +1,6 @@
 SMODS.Joker {
     name = 'Master Xehanort',
     key = "xehanort",
-    set_badges = function(self, card, badges)
-        badges[#badges + 1] = create_badge("Organisation XIII", G.C.BLACK, G.C.WHITE, 1.0)
-    end,
 
     loc_vars = function(self, info_queue, card)
         return {
@@ -20,8 +17,8 @@ SMODS.Joker {
     pos = { x = 1, y = 6 },
     unlocked = true,
     discovered = true,
-    blueprint_compat = false,
-    eternal_compat = false,
+    blueprint_compat = true,
+    eternal_compat = true,
     perishable_compat = true,
 
     config = {
@@ -37,8 +34,12 @@ SMODS.Joker {
         end
         if context.joker_main then
             if card.ability.extra.last_played ~= context.scoring_name then
-                SMODS.calculate_effect({ message = localize('k_upgrade_ex'), colour = G.C.FILTER }, card)
-                card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
+                SMODS.scale_card(card, {
+                    ref_table = card.ability.extra,
+                    ref_value = "mult",
+                    scalar_value = "mult_gain",
+                    operation = '+',
+                })
             else
                 if card.ability.extra.mult > 0 then
                     card.ability.extra.mult = 0

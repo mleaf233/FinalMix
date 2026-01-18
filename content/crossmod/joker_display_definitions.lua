@@ -18,19 +18,19 @@ jd_def["j_kh_lethimcook"] = {
         card.joker_display_values.right = localize("k_incompatible")
 
         if G.jokers and G.jokers.cards then
-            local pos = GetPos(card, G.jokers.cards)
+            local pos = XIII.get_pos(card, G.jokers.cards)
 
             -- Left Joker
             local left = G.jokers.cards[pos - 1]
             if left and left ~= card then
-                local left_compat = CompatCheck(card, left)
+                local left_compat = XIII.compat_check(card, left)
                 card.joker_display_values.left = left_compat and localize("k_compatible") or localize("k_incompatible")
             end
 
             -- Right Joker
             local right = G.jokers.cards[pos + 1]
             if right and right ~= card then
-                local right_compat = CompatCheck(card, right)
+                local right_compat = XIII.compat_check(card, right)
                 card.joker_display_values.right = right_compat and localize("k_compatible") or localize("k_incompatible")
             end
         end
@@ -267,7 +267,7 @@ jd_def["j_kh_axel"] = {
 
     calc_function = function(card)
         local target = G.jokers.cards[1]
-        local compatible = CompatCheck(card, target) and not target.ability.perishable
+        local compatible = XIII.compat_check(card, target) and not target.ability.perishable
 
         if target and target ~= card then
             card.joker_display_values.compatibility = compatible and localize('k_compatible') or
@@ -362,16 +362,7 @@ jd_def["j_kh_donald"] = {
         local copied_name = "[None]"
 
         if G.jokers then
-            local function getJokerByKey(jokers, key)
-                for _, joker in ipairs(jokers) do
-                    if joker.config.center.key == key then
-                        return joker
-                    end
-                end
-                return nil
-            end
-
-            local copied_joker = getJokerByKey(G.jokers.cards, copied_joker_key)
+            local copied_joker = XIII.get_joker_by_key(G.jokers.cards, copied_joker_key)
             if copied_joker then
                 copied_name = copied_joker.config.center.name or "None"
             end
@@ -554,7 +545,7 @@ jd_def["j_kh_luxord"] = {
     end,
 }
 
--- Kingdom Hearts Trilogy
+-- Disc Trilogy
 jd_def["j_kh_khtrilogy"] = {
 
     text = {

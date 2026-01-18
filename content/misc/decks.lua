@@ -2,7 +2,7 @@
 SMODS.Back {
     key = 'kingdom',
     atlas = 'KHDecks',
-    pos = { x = 0, y = 0 },
+    pos = { x = 2, y = 0 },
     discovered = true,
     config = { vouchers = { "v_overstock_norm" }, },
     loc_vars = function(self, info_queue, center)

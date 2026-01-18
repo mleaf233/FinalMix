@@ -1,9 +1,6 @@
 SMODS.Joker {
     name = 'Goofy',
     key = "goofy",
-    set_badges = function(self, card, badges)
-        badges[#badges + 1] = create_badge("Disney", G.C.BLUE, G.C.WHITE, 1.2)
-    end,
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS.m_wild
         return {

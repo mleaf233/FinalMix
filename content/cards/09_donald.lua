@@ -1,15 +1,12 @@
 SMODS.Joker {
     name = 'Donald',
     key = 'donald',
-    set_badges = function(self, card, badges)
-        badges[#badges + 1] = create_badge("Disney", G.C.BLUE, G.C.WHITE, 1.2)
-    end,
     loc_vars = function(self, info_queue, card)
         local copied_joker_key = card.ability.extra.copied_joker_key
         local copied_name = "None"
 
         if G.jokers then
-            local copied_joker = GetJokerByKey(G.jokers.cards, copied_joker_key)
+            local copied_joker = XIII.get_joker_by_key(G.jokers.cards, copied_joker_key)
             if copied_joker then
                 copied_name = copied_joker.config.center.name
             end
@@ -59,13 +56,11 @@ SMODS.Joker {
         end
 
         if card.ability.extra.copied_joker_key and not card.debuff and G.jokers then
-            local copied_joker = GetJokerByKey(G.jokers.cards, card.ability.extra.copied_joker_key)
+            local copied_joker = XIII.get_joker_by_key(G.jokers.cards, card.ability.extra.copied_joker_key)
 
-            if copied_joker then
-                local success, effect = pcall(SMODS.blueprint_effect, card, copied_joker, context)
-                if success and effect then
-                    return effect
-                end
+            local copied_joker_ret = SMODS.blueprint_effect(card, copied_joker, context)
+            if copied_joker_ret then
+                return copied_joker_ret
             end
         end
     end

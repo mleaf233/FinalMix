@@ -7,7 +7,7 @@ SMODS.Tag {
     config = {},
     apply = function(self, tag, context)
         if context.type == 'store_joker_create' then
-            local joker_keys = GetResourceWithPrefix("j_kh_")
+            local joker_keys = XIII.get_resource_with_prefix("j_kh_")
 
             for i = #joker_keys, 1, -1 do
                 if joker_keys[i] == "j_kh_nobody" or joker_keys[i] == "j_kh_munny" then
@@ -65,13 +65,14 @@ SMODS.Tarot {
 
     use = function(self, card, area, copier)
         local used_card = copier or card
-        local joker_keys = GetResourceWithPrefix("j_kh_")
+        local joker_keys = XIII.get_resource_with_prefix("j_kh_")
 
         for i = #joker_keys, 1, -1 do
             if joker_keys[i] == "j_kh_nobody" or joker_keys[i] == "j_kh_munny" then
                 table.remove(joker_keys, i)
             end
         end
+
         local owned_jokers = {}
         for _, j in ipairs(G.jokers.cards) do
             owned_jokers[j.config.center.key] = true

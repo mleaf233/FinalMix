@@ -111,6 +111,7 @@ return {
 				},
 			},
 		},
+
 		Joker = {
 			j_kh_magnet = {
 				name = '{E:kh_pulse}魔尼磁石',
@@ -734,7 +735,7 @@ return {
 			kh_kingdom_seal = {
 				name = '王国蜡封',
 				text = {
-                    "被{C:attention}弃掉{}时",
+					"被{C:attention}弃掉{}时",
 					"留在手中的牌",
 					"永久获得",
 					"{C:chips}+#1#{}筹码",
@@ -768,46 +769,6 @@ return {
 					"{C:attention}消耗牌{}",
 					"{C:inactive}（必须有空位）",
 				}
-			},
-
-			kh_drive = {
-				name = '驱动',
-				text = {
-					"{X:mult,C:white}X4{}倍率"
-				}
-			},
-
-			p_kh_drive_mini = {
-				name = "迷你驱动包",
-				text = {
-					"选择{C:attention}#1#{}张",
-					"{C:orange}驱动{}牌",
-				},
-			},
-
-			p_kh_drive_normal = {
-				name = "驱动包",
-				text = {
-					"从最多{C:attention}#2#张",
-					"{C:orange}驱动{}牌中",
-					"选择{C:attention}#1#{}张",
-				},
-			},
-			p_kh_drive_jumbo = {
-				name = "巨型驱动包",
-				text = {
-					"从最多{C:attention}#2#张",
-					"{C:orange}驱动{}牌中",
-					"选择{C:attention}#1#{}张",
-				},
-			},
-			p_kh_drive_mega = {
-				name = "超级驱动包",
-				text = {
-					"从最多{C:attention}#2#张",
-					"{C:orange}驱动{}牌中",
-					"选择{C:attention}#1#{}张",
-				},
 			},
 		},
 
@@ -851,67 +812,6 @@ return {
 
 		},
 
-		Drive = {
-
-			c_kh_valorform = {
-				name = "英勇形态",
-				text = {
-					"为下一次出牌",
-					"添加{C:mult}+4{}基础{C:mult}倍率{}",
-					"在计分前",
-				},
-			},
-
-			c_kh_wisdomform = {
-				name = "智慧形态",
-				text = {
-					"为下一次出牌",
-					"{C:enhanced}交换{}基础{C:chips}筹码{}和{C:mult}倍率{}",
-					"在计分前",
-					"{C:inactive}（无法叠加）{}",
-				},
-			},
-
-			c_kh_limitform = {
-				name = "极限形态",
-				text = {
-					"为下一次出牌",
-					"添加{C:chips}+30{}基础{C:chips}筹码{}",
-					"在计分前",
-				},
-			},
-
-			c_kh_masterform = {
-				name = "大师形态",
-				text = {
-					"为下一次出牌",
-					"计分时",
-					"{X:mult,C:white}X2{} {C:mult}倍率{}",
-				},
-			},
-
-
-			c_kh_finalform = {
-				name = "终极形态",
-				text = {
-					"为下一次出牌",
-					"{C:enhanced}翻倍{}基础{C:chips}筹码{}和{C:mult}倍率{}",
-					"在计分前",
-				},
-			},
-
-			c_kh_antiform = {
-				name = "反形态",
-				text = {
-					"为下一次出牌",
-					"计分时{C:enhanced}平衡{}",
-					"{C:blue}筹码{}和{C:red}倍率{}",
-					"{C:inactive}（无法叠加）{}",
-				},
-			},
-
-
-		},
 		Mod = {
 			kingdomhearts = {
 				name = "Final Mix",
@@ -976,15 +876,7 @@ return {
 
 		dictionary = {
 			-- config
-			k_finalmix_config_jokers = "启用KH小丑牌",
-			k_finalmix_config_tarots = "启用塔罗牌",
-			k_finalmix_config_spectrals = "启用幻灵牌",
-			k_finalmix_config_vouchers = "启用优惠券",
-			k_finalmix_config_seal = "启用蜡封",
-			k_finalmix_config_blind = "启用 Boss 盲注",
-			k_finalmix_config_drive = "启用驱动牌（制作中）",
 			k_finalmix_config_menu_toggle = "切换自定义标题界面",
-			k_finalmix_config_restart = "（需要重启）",
 
 			-- kairi/namine
 			kh_a_side = '凯丽',

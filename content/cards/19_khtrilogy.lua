@@ -1,5 +1,5 @@
 SMODS.Joker {
-	name = 'Kingdom Hearts',
+	name = 'Disc',
 	key = "khtrilogy",
 
 	loc_vars = function(self, info_queue, card)
@@ -26,7 +26,7 @@ SMODS.Joker {
 	eternal_compat = true,
 	perishable_compat = true,
 	blueprint_compat = true,
-	display_size = { w = 71 * 1.1, h = 95 * 1.1 }, -- used to be 1.3
+	display_size = { w = 71 * 1.1, h = 95 * 1.1 },
 
 	config = {
 		extra = {
@@ -53,9 +53,7 @@ SMODS.Joker {
 	end,
 
 	calculate = function(self, card, context)
-		local level = card.ability.extra.level
-
-		if level == 1 and G.GAME.current_round.hands_played == 0 then
+		if card.ability.extra.level == 1 and G.GAME.current_round.hands_played == 0 then
 			if context.after and not context.blueprint and not context.repetition and not context.other_card then
 				local hand_score = hand_chips * mult
 				local blind_score = G.GAME.blind.chips
@@ -66,7 +64,7 @@ SMODS.Joker {
 			end
 		end
 
-		if context.discard and not context.blueprint and level == 2 then
+		if context.discard and not context.blueprint and card.ability.extra.level == 2 then
 			card.ability.extra.discards_remaining = card.ability.extra.discards_remaining - 1
 
 			if card.ability.extra.discards_remaining <= 0 then

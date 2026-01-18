@@ -1,13 +1,13 @@
 SMODS.Joker {
 	key = "randomjoker",
-
+	name = "Random Joker",
 	loc_vars = function(self, info_queue, card)
 		local r_percent = {}
 		for i = card.ability.extra.min, card.ability.extra.max do
 			r_percent[#r_percent + 1] = tostring(i)
 		end
-		loc_percent = '%'
-		main_start = {
+		local loc_percent = '%'
+		local main_start = {
 			{ n = G.UIT.T, config = { text = 'Balances ', colour = G.C.BLACK, scale = 0.32 } },
 			{ n = G.UIT.O, config = { object = DynaText({ string = r_percent, colours = { G.C.PURPLE }, pop_in_rate = 9999999, silent = true, random_element = true, pop_delay = 0.5, scale = 0.32, min_cycle_time = 0 }) } },
 			{
@@ -59,7 +59,7 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		if context.final_scoring_step then
 			card.ability.extra.percent = pseudorandom("j_kh_randomjoker", card.ability.extra.min, card.ability.extra.max)
-			BalancePercent(card, (card.ability.extra.percent * 0.01))
+			XIII.balance_percent(card, (card.ability.extra.percent * 0.01))
 		end
 	end
 }

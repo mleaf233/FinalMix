@@ -7,8 +7,8 @@
 Currently adds the following content to Balatro based on the hit videogame, Kingdom Hearts!
 
 - 4 suits of Kingdom Hearts x Friends of Jimbo Face cards!<br>
-
-<img width="468" height="272" alt="{97840C34-05E8-41E9-95BD-A1A6990B82A0}" src="https://github.com/user-attachments/assets/ad14b31e-43b8-4bc4-8a1b-e6572c8cbbdc" />
+- New Challenges!<br>
+<img width="468" height="272" alt="image" src="https://github.com/user-attachments/assets/cf9d3bed-f429-4fb0-bd57-204d6f15b741" />
 
 and more to come... stay tuned!
 
@@ -40,7 +40,7 @@ This Mod now has Partner API support! _yay_
 
 ## Requirements
 
-- Requires [Steamodded 1016c+](https://github.com/Steamodded/smods/releases).
+- Requires [Steamodded 1221a+](https://github.com/Steamodded/smods/releases).
 - Requires [Lovely](https://github.com/ethangreen-dev/lovely-injector).
 
 ## Installation
@@ -48,6 +48,7 @@ This Mod now has Partner API support! _yay_
 Get the latest stable version from the [Releases](https://github.com/cloudzXIII/KHJokers/releases), then download and extract the zip into the Mods folder.
 
 ## Many Thanks
+
 
 Credits to the following Mods and their devs! I borrowed/referenced their code in the making of this mod!
 
@@ -85,6 +86,10 @@ Credits to the following Mods and their devs! I borrowed/referenced their code i
   <summary>Maximus — <a href="https://github.com/the-Astra/Maximus">GitHub</a></summary>
   - For the code used to display the logo on the titlescreen
 </details>
+
+**Translating:**
+- Simplified Chinese (zh_CN) localization - mleaf233
+
 
 **Misc Functions:**
 

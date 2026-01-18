@@ -31,8 +31,12 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		if context.individual and context.cardarea == G.play and not context.blueprint then
 			if context.other_card:is_suit("Hearts") then
-				card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.Xmult_gain
-				SMODS.calculate_effect({ message = localize('k_upgrade_ex'), colour = G.C.FILTER }, card)
+				SMODS.scale_card(card, {
+					ref_table = card.ability.extra,
+					ref_value = "x_mult",
+					scalar_value = "Xmult_gain",
+					operation = '+',
+				})
 			end
 		end
 

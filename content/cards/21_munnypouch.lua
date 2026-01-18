@@ -1,39 +1,9 @@
 SMODS.Joker {
-    key = 'dummy',
-    name = "Munny",
-    generate_ui = function(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
-        if desc_nodes ~= full_UI_table.main and G.jokers then
-            G.munny_area = CardArea(
-                G.ROOM.T.x + 0.2 * G.ROOM.T.w / 2, G.ROOM.T.h,
-                1.05 * G.CARD_W,
-                0.95 * G.CARD_H,
-                { card_limit = 1, type = "title", highlight_limit = 0, collection = true }
-            )
-            SMODS.add_card({
-                key = "j_kh_munny",
-                area = G.munny_area
-            })
-            desc_nodes[#desc_nodes + 1] = { {
-                n = G.UIT.R,
-                config = { align = "cm", padding = 0.07, no_fill = true },
-                nodes = {
-                    { n = G.UIT.O, config = { object = G.munny_area } }
-                }
-            } }
-        end
-        return SMODS.Center.generate_ui(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
-    end,
-    no_collection = true,
-    in_pool = function(self)
-        return false
-    end
-}
-SMODS.Joker {
     key = 'munnypouch',
     name = "Munny Pouch",
 
     loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS["j_kh_dummy"]
+        info_queue[#info_queue + 1] = G.P_CENTERS["j_kh_munny"]
         local numerator, denominator = SMODS.get_probability_vars(card, card.ability.extra.base, card.ability.extra.odds,
             'munnypouch1')
         return {
@@ -130,11 +100,39 @@ SMODS.Joker {
     name = "Munny",
 
     loc_vars = function(self, info_queue, card)
+        local text = "[pouch sell value]"
+        if card.ability.extra.dollars > 0 then
+            text = card.ability.extra.dollars
+        else
+            text = "[pouch sell value]"
+        end
         return {
             vars = {
-                card.ability.extra.dollars
+                text
             }
         }
+    end,
+    generate_ui = function(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
+        if desc_nodes ~= full_UI_table.main and G.jokers then
+            G.munny_area = CardArea(
+                G.ROOM.T.x + 0.2 * G.ROOM.T.w / 2, G.ROOM.T.h,
+                1.05 * G.CARD_W,
+                0.95 * G.CARD_H,
+                { card_limit = 1, type = "title", highlight_limit = 0, collection = true }
+            )
+            SMODS.add_card({
+                key = "j_kh_munny",
+                area = G.munny_area
+            })
+            desc_nodes[#desc_nodes + 1] = { {
+                n = G.UIT.R,
+                config = { align = "cm", padding = 0.07, no_fill = true },
+                nodes = {
+                    { n = G.UIT.O, config = { object = G.munny_area } }
+                }
+            } }
+        end
+        return SMODS.Center.generate_ui(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
     end,
     no_collection = true,
     rarity = 1,

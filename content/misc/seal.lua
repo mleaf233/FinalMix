@@ -1,8 +1,7 @@
 SMODS.Seal {
     name = "kingdom",
     key = "kingdom",
-    discovered = true,
-    badge_colour = G.C.BLUE,
+    badge_colour = HEX("5d5e8d"), --G.C.BLUE,
     atlas = "KHSeals",
     pos = { x = 1, y = 0 },
 
@@ -38,7 +37,6 @@ SMODS.Seal {
 SMODS.Seal {
     name = "luckyemblem",
     key = "luckyemblem",
-    discovered = true,
     badge_colour = HEX("fab950"),
     atlas = "KHSeals",
     pos = { x = 0, y = 0 },
@@ -140,7 +138,7 @@ SMODS.Sticker({
                             trigger = 'after',
                             delay = 0.15 * (i - 1),
                             func = function()
-                                local current_pos = GetPos(card, G.jokers.cards)
+                                local current_pos = XIII.get_pos(card, G.jokers.cards)
                                 if current_pos and #G.jokers.cards > 1 then
                                     local new_pos = pseudorandom('kh_shuffled', 1, #G.jokers.cards)
 
